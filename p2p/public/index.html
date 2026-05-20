@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ZIYOKOR NONLARI — GPS P2P Marketplace</title>
-<script src="/gun/gun.js"></script>
+<script src="gun/gun.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -1102,7 +1102,7 @@ function checkUpdate() {
 function downloadUpdate() {
   showToast('⬇️ Yuklanmoqda...');
   const link = document.createElement('a');
-  link.href = '/nonlar.apk';
+  link.href = 'nonlar.apk';
   link.download = 'ziyokor-nonlari.apk';
   document.body.appendChild(link);
   link.click();
