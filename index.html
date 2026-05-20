@@ -164,7 +164,11 @@ const gun = Gun({ peers: GUN_RELAY ? [GUN_RELAY] : [], localStorage: true, radis
 
 // ====== STATE ======
 let peerCount = 0;
-let myNodeId = 'user_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+// Persistent user ID (localStorage, survives page reload)
+if (!localStorage.getItem('ziyokor_uid')) {
+  localStorage.setItem('ziyokor_uid', 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8));
+}
+let myNodeId = localStorage.getItem('ziyokor_uid');
 let myRole = null;
 let myName = '';
 let myBakeryName = '';
@@ -280,6 +284,215 @@ function subscribeLocations() {
     }
   });
 }
+
+// ====== CHAT SYSTEM ======
+let chatContact = null; // current chat contact ID
+let chatMessages = {};  // roomId -> [msg, ...]
+let chatUnread = {};    // roomId -> count
+let chatOpen = false;
+
+function chatRoomId(peerId) {
+  return [myNodeId, peerId].sort().join('_');
+}
+
+function subscribeChats() {
+  gun.get('chat_messages').map().on((msgs, roomId) => {
+    if (!roomId || !msgs) return;
+    // Only subscribe to rooms we're part of
+    if (!roomId.includes(myNodeId)) return;
+    const list = Object.values(msgs).filter(m => m && m.t);
+    chatMessages[roomId] = list.sort((a,b) => (a.t || 0) - (b.t || 0));
+    if (chatOpen) renderChat();
+    updateChatBadge();
+  });
+}
+
+function openChat(peerId, peerName) {
+  chatContact = { id: peerId, name: peerName || 'Foydalanuvchi' };
+  chatOpen = true;
+  const room = chatRoomId(peerId);
+  chatUnread[room] = 0;
+  showModal(chatModalHtml());
+  renderChat();
+}
+
+function chatModalHtml() {
+  if (!chatContact) return `<div style="text-align:center;padding:40px;color:var(--text-dim)">💬 Foydalanuvchi tanlanmagan</div>`;
+  const room = chatRoomId(chatContact.id);
+  const msgs = chatMessages[room] || [];
+  const otherLoc = liveLocations[chatContact.id];
+  const online = otherLoc?.online ? '🟢 Online' : '🔴 Offline';
+  return `
+    <div style="display:flex;flex-direction:column;height:65vh">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div style="font-weight:600;color:var(--text-bright)">💬 ${chatContact.name}</div>
+          <div style="font-size:0.6rem;color:var(--text-dim)">${online} · ${chatContact.id.slice(-8)}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="closeChat()">✕</button>
+      </div>
+      <div id="chatMessages" style="flex:1;overflow-y:auto;padding:8px;background:var(--glass);border-radius:var(--radius);margin-bottom:8px;display:flex;flex-direction:column;gap:6px">
+        ${msgs.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:0.75rem">Xabarlar yo\'q. Xabar yuboring!</div>' : ''}
+        ${msgs.map(m => {
+          const isMe = m.f === myNodeId;
+          const time = m.t ? new Date(m.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+          let content = m.text || '';
+          if (m.type === 'image') {
+            content = `<img src="${m.data}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${m.data}','_blank')" />`;
+          }
+          return `<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'}">
+            <div style="background:${isMe?'var(--gold)':'var(--card)'};color:${isMe?'#000':'var(--text)'};padding:8px 12px;border-radius:12px;font-size:0.78rem;max-width:80%;word-break:break-word">${content}</div>
+            <div style="font-size:0.5rem;color:var(--text-dim);margin-top:2px">${time}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="attachImage()" style="font-size:1rem;padding:8px 10px">📷</button>
+        <input id="chatInput" style="flex:1" placeholder="Xabar yozing..." onkeydown="if(event.key==='Enter')sendMessage()" />
+        <button class="btn btn-primary" onclick="sendMessage()" style="padding:8px 16px">➤</button>
+      </div>
+    </div>
+  `;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input?.value?.trim();
+  if (!text || !chatContact) return;
+  input.value = '';
+  const room = chatRoomId(chatContact.id);
+  const msgId = 'msg_' + Date.now().toString(36) + Math.random().toString(36).slice(2,4);
+  const msg = { f: myNodeId, t: Date.now(), text, type: 'text' };
+  gun.get('chat_messages').get(room).get(msgId).put(msg);
+  showToast('✅ Xabar yuborildi');
+}
+
+function attachImage() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*,video/*';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 500000) { showToast('⚠️ Fayl juda katta (max 500KB)'); return; }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const data = ev.target.result;
+      const isVideo = file.type.startsWith('video/');
+      const room = chatRoomId(chatContact.id);
+      const msgId = 'msg_' + Date.now().toString(36) + Math.random().toString(36).slice(2,4);
+      const msg = { f: myNodeId, t: Date.now(), text: file.name, type: isVideo ? 'video' : 'image', data };
+      gun.get('chat_messages').get(room).get(msgId).put(msg);
+      showToast('📷 Rasm yuborildi');
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function renderChat() {
+  const container = document.getElementById('chatMessages');
+  if (!container || !chatContact) return;
+  const room = chatRoomId(chatContact.id);
+  const msgs = chatMessages[room] || [];
+  container.innerHTML = msgs.map(m => {
+    const isMe = m.f === myNodeId;
+    const time = m.t ? new Date(m.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+    let content = m.text || '';
+    if (m.type === 'image') {
+      content = `<img src="${m.data}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${m.data}','_blank')" />`;
+    } else if (m.type === 'video') {
+      content = `<video src="${m.data}" controls style="max-width:200px;border-radius:8px"></video>`;
+    }
+    return `<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'}">
+      <div style="background:${isMe?'var(--gold)':'var(--card)'};color:${isMe?'#000':'var(--text)'};padding:8px 12px;border-radius:12px;font-size:0.78rem;max-width:80%;word-break:break-word">${content}</div>
+      <div style="font-size:0.5rem;color:var(--text-dim);margin-top:2px">${time}</div>
+    </div>`;
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+function closeChat() {
+  chatOpen = false;
+  chatContact = null;
+  closeModal();
+}
+
+function updateChatBadge() {
+  const fab = document.getElementById('chatFab');
+  if (!fab) return;
+  const total = Object.values(chatUnread).reduce((s,v) => s+v, 0);
+  const badge = fab.querySelector('.badge');
+  if (badge) badge.textContent = total || '';
+}
+
+// Contact list: all reachable users
+function allContacts() {
+  const contacts = [];
+  // All online/offline users from locations
+  Object.entries(liveLocations).forEach(([id, loc]) => {
+    if (id === myNodeId) return;
+    const label = loc.role === 'seller' ? '🏪 ' + (loc.bakery || loc.name) :
+                 loc.role === 'delivery' ? '🚚 ' + loc.name :
+                 '🛒 ' + loc.name;
+    contacts.push({ id, name: label, role: loc.role, online: loc.online });
+  });
+  // Also add bakeries (even if offline)
+  Object.entries(bakeries).forEach(([id, b]) => {
+    if (id === myNodeId) return;
+    if (!contacts.find(c => c.id === id)) {
+      contacts.push({ id, name: '🏪 ' + (b.name || b.owner), role: 'seller', online: b.online });
+    }
+  });
+  return contacts;
+}
+
+function chatFabHtml() {
+  return `<div id="chatFabContainer" style="position:fixed;bottom:90px;right:16px;z-index:999">
+    <button id="chatFab" class="btn btn-primary" style="width:56px;height:56px;border-radius:50%;padding:0;justify-content:center;font-size:1.4rem;box-shadow:0 4px 16px rgba(0,0,0,0.4);position:relative" onclick="showChatContacts()">
+      💬<span class="badge" style="position:absolute;top:-4px;right:-4px;background:#ff6b6b;color:#fff;font-size:0.55rem;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700"></span>
+    </button>
+  </div>`;
+}
+
+function showChatContacts() {
+  const contacts = allContacts();
+  if (!contacts.length) { showToast('💬 Tarmoqda boshqa foydalanuvchilar yo\'q'); return; }
+  showModal(`
+    <div style="min-height:40vh">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-weight:600;color:var(--text-bright)">💬 Xabarlar</span>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+      </div>
+      ${contacts.map(c => {
+        const room = chatRoomId(c.id);
+        const unread = chatUnread[room] || 0;
+        return `<div class="bakery-item" style="cursor:pointer;margin-bottom:4px" onclick="openChat('${c.id}','${c.name.replace(/'/g,"\\'")}')">
+          <div class="bakery-icon" style="font-size:1.2rem">${c.online ? '🟢' : '🔴'}</div>
+          <div class="bakery-info">
+            <div class="bakery-name">${c.name}</div>
+            <div class="bakery-detail" style="font-size:0.62rem">${c.online ? 'Online' : 'Offline'} · ${c.id.slice(-8)}${unread ? ` · <span style="color:var(--gold);font-weight:600">${unread} ta yangi</span>` : ''}</div>
+          </div>
+          <span style="font-size:1.2rem">💬</span>
+        </div>`;
+      }).join('')}
+    </div>
+  `);
+}
+
+// Hook into existing message subscription to count unread
+const _origOn = gun.get('chat_messages').map().on;
+function countUnread() {
+  gun.get('chat_messages').map().on((msgs, roomId) => {
+    if (!roomId || !roomId.includes(myNodeId)) return;
+    const allMsgs = Object.values(msgs || {}).filter(m => m && m.t);
+    const lastRead = parseInt(localStorage.getItem('chat_last_' + roomId) || '0');
+    const unread = allMsgs.filter(m => m.f !== myNodeId && m.t > lastRead).length;
+    if (unread > 0) chatUnread[roomId] = unread;
+    updateChatBadge();
+  });
+}
+setTimeout(countUnread, 1000);
 
 // ====== LOGIN ======
 function showLogin() {
@@ -555,6 +768,10 @@ function sellerDashboard() {
       ${myLat && myLng ? `<span class="dist-badge">📍 ${myLat.toFixed(4)}, ${myLng.toFixed(4)}</span>` : ''}
     </div>
 
+    <div style="margin-bottom:10px;font-size:0.7rem;color:var(--text-dim);display:flex;gap:6px;flex-wrap:wrap">
+      ${customers.slice(0,5).map(c => `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${c.id}','🛒 ${c.name.replace(/'/g,"\\'")}')">💬 ${c.name}</button>`).join('')}
+      ${deliveryFolks.slice(0,3).map(d => `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${d.id}','🚚 ${d.name.replace(/'/g,"\\'")}')">💬 ${d.name}</button>`).join('')}
+    </div>
     <div style="font-size:0.82rem;color:var(--text-bright);margin-bottom:10px">🟢 Jonli buyurtmalar</div>
     ${activeOrders.length === 0
       ? emptyState('⏳', 'Hali buyurtma yo\'q', 'Xaridorlar buyurtma berganda shu yerda ko\'rinadi')
@@ -629,6 +846,10 @@ function orderCard(o, showActions) {
     <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
     <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:4px">📍 ${o.address || 'Manzil kiritilmagan'} · 📞 ${o.customerPhone || '—'}${deliveryName}</div>
     <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:6px">${locHtml}</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">
+      ${o.customerId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="event.stopPropagation();openChat('${o.customerId}','🛒 ${(o.customerName||'Xaridor').replace(/'/g,"\\'")}')">💬 Xaridor</button>` : ''}
+      ${o.deliveryId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="event.stopPropagation();openChat('${o.deliveryId}','🚚 ${(o.deliveryName||'Yetkazuvchi').replace(/'/g,"\\'")}')">💬 Yetkazuvchi</button>` : ''}
+    </div>
     ${showActions && actionsHtml[o.status] ? `<div style="display:flex;gap:6px;flex-wrap:wrap">${actionsHtml[o.status]}</div>` : ''}
   </div>`;
 }
@@ -673,7 +894,10 @@ function customerProducts() {
               <div style="font-size:0.9rem;font-weight:600;color:var(--text-bright)">🏪 ${b.name}</div>
               <div style="font-size:0.65rem;color:var(--text-dim)">${b.owner} · 📞 ${b.phone || '—'} ${dist ? `· 📍 ${dist} km` : ''}</div>
             </div>
-            <span class="role-badge role-seller">🟢 P2P</span>
+            <div style="display:flex;gap:4px;align-items:center">
+              <button class="btn btn-sm btn-ghost" style="padding:4px 8px;font-size:0.7rem" onclick="event.stopPropagation();openChat('${bId}','🏪 ${b.name.replace(/'/g,"\\'")}')">💬</button>
+              <span class="role-badge role-seller">🟢 P2P</span>
+            </div>
           </div>
           <div class="grid-3">
             ${prods.map(p => `
@@ -719,7 +943,10 @@ function customerBakeries() {
           <div class="bakery-name">${b.name}</div>
           <div class="bakery-detail">${b.owner} · 📞 ${b.phone || '—'}${loc ? ` · 📍 ${loc.lat?.toFixed(4)}, ${loc.lng?.toFixed(4)}` : ''} ${d ? `· 🚶 ${d} km` : ''}</div>
         </div>
-        <span class="role-badge role-seller">🟢</span>
+        <div style="display:flex;gap:4px;align-items:center">
+          <button class="btn btn-sm btn-ghost" style="padding:4px 8px;font-size:0.7rem" onclick="event.stopPropagation();openChat('${b.id}','🏪 ${b.name.replace(/'/g,"\\'")}')">💬</button>
+          <span class="role-badge role-seller">🟢</span>
+        </div>
       </div>`;
     }).join('')}
     ${deliveryFolks.length > 0 ? `
@@ -734,6 +961,7 @@ function customerBakeries() {
               <div class="bakery-name">${d.name}</div>
               <div class="bakery-detail">${dist ? `📍 ${dist}` : ''}</div>
             </div>
+            <button class="btn btn-sm btn-ghost" style="padding:4px 8px;font-size:0.7rem" onclick="event.stopPropagation();openChat('${d.id}','🚚 ${d.name.replace(/'/g,"\\'")}')">💬</button>
           </div>`;
         }).join('')}
       </div>
@@ -759,6 +987,10 @@ function customerOrders() {
               <div style="font-size:0.78rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name || i.productName} x${i.qty || i.quantity}`).join(', ')}</div>
               <div style="font-size:0.72rem;font-weight:600;color:var(--gold)">${(o.total||0).toLocaleString()} so'm</div>
               <div style="font-size:0.62rem;color:var(--text-dim)">📍 ${o.address || '—'}</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
+                ${o.bakeryId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${(o.bakeryName||'Nonvoy').replace(/'/g,"\\'")}')">💬 Nonvoy</button>` : ''}
+                ${o.deliveryId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.deliveryId}','🚚 ${(o.deliveryName||'Yetkazuvchi').replace(/'/g,"\\'")}')">💬 Yetkazuvchi</button>` : ''}
+              </div>
               ${o.deliveryName ? `<div style="font-size:0.62rem;color:var(--purple)">🚚 ${o.deliveryName} ${deliveryLoc ? `· 📍 ${deliveryLoc.lat?.toFixed(4)}, ${deliveryLoc.lng?.toFixed(4)}` : ''}</div>` : ''}
               ${o.status === 'delivering' && o.deliveryId ? `
                 <button class="btn btn-sm btn-ghost" style="margin-top:6px;font-size:0.6rem" onclick="switchTab(3)">🗺 Yetkazuvchini xaritada ko'rish</button>
@@ -936,7 +1168,11 @@ function deliveryOrders() {
             <div style="font-size:0.72rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name} x${i.qty}`).join(', ')}</div>
             <div style="font-size:0.7rem;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
             <div style="font-size:0.6rem;color:var(--text-dim);margin-bottom:8px">📍 ${o.address || '—'}</div>
-            <button class="btn btn-success btn-sm" onclick="claimDelivery('${o.id}')">🚚 Olish</button>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${(o.bakeryName||'Nonvoy').replace(/'/g,"\\'")}')">💬 Nonvoy</button>
+              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${(o.customerName||'Xaridor').replace(/'/g,"\\'")}')">💬 Xaridor</button>
+              <button class="btn btn-success btn-sm" onclick="claimDelivery('${o.id}')">🚚 Olish</button>
+            </div>
           </div>
         `).join('')}
       </div>
@@ -954,6 +1190,10 @@ function deliveryOrders() {
           <div style="font-size:0.72rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name} x${i.qty}`).join(', ')}</div>
           <div style="font-size:0.7rem;color:var(--gold)">${(o.total||0).toLocaleString()} so'm</div>
           <div style="font-size:0.6rem;color:var(--text-dim);margin-bottom:6px">📍 ${o.address || '—'} · 📞 ${o.customerPhone || '—'}</div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
+              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${(o.bakeryName||'Nonvoy').replace(/'/g,"\\'")}')">💬 Nonvoy</button>
+              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${(o.customerName||'Xaridor').replace(/'/g,"\\'")}')">💬 Xaridor</button>
+            </div>
           ${o.status === 'delivering' ? `
             <div style="display:flex;gap:6px">
               <button class="btn btn-success btn-sm" onclick="updateOrder('${o.id}','delivered')">✅ Yetkazildi</button>
@@ -1372,8 +1612,18 @@ document.getElementById('modalOverlay').addEventListener('click', e => {
 // ====== INIT ======
 showLogin();
 
+// Chat FAB (all roles)
+function initChatFab() {
+  if (!document.getElementById('chatFabContainer')) {
+    document.body.insertAdjacentHTML('beforeend', chatFabHtml());
+    subscribeChats();
+  }
+}
+
 // Cart FAB
 setInterval(() => {
+  if (myRole) initChatFab();
+
   if (myRole !== 'customer') {
     document.getElementById('cartFab')?.remove();
     return;
