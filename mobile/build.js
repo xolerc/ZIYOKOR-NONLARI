@@ -8,10 +8,8 @@ const publicDir = path.join(__dirname, '..', 'p2p', 'public');
 if (fs.existsSync(www)) fs.rmSync(www, { recursive: true });
 fs.mkdirSync(www, { recursive: true });
 
-// Copy gun library
-const gunSrc = path.join(publicDir, 'gun');
-const gunDst = path.join(www, 'gun');
 function copyRecursive(src, dst) {
+  if (!fs.existsSync(src)) return;
   fs.mkdirSync(dst, { recursive: true });
   for (const entry of fs.readdirSync(src)) {
     const s = path.join(src, entry);
@@ -23,8 +21,14 @@ function copyRecursive(src, dst) {
     }
   }
 }
-copyRecursive(gunSrc, gunDst);
+
+// Copy gun library
+copyRecursive(path.join(publicDir, 'gun'), path.join(www, 'gun'));
 console.log('  📁 Gun.js copied');
+
+// Copy Leaflet library
+copyRecursive(path.join(publicDir, 'lib'), path.join(www, 'lib'));
+console.log('  📁 Leaflet copied');
 
 // Copy index.html (already has Capacitor enhancements)
 fs.copyFileSync(path.join(publicDir, 'index.html'), path.join(www, 'index.html'));

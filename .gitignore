@@ -6,5 +6,6 @@ dist/
 .DS_Store
 # GitHub Pages copies (generated from p2p/public/)
 /gun/
+/lib/
 /nonlar.apk
 /version.json

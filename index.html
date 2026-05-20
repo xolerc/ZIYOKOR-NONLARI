@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ZIYOKOR NONLARI — GPS P2P Marketplace</title>
 <script src="gun/gun.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="lib/leaflet.css" />
+<script src="lib/leaflet.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -155,10 +155,11 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 // No fake data. Only real Gun.js peer-to-peer state.
 // ============================================================
 
-const GUN_RELAY = window.location.origin + '/gun';
+const IS_CAPACITOR = !!(window.Capacitor && window.Capacitor.isNativePlatform());
+const GUN_RELAY = IS_CAPACITOR ? null : (window.location.origin + '/gun');
 
 // ====== GUN ======
-const gun = Gun({ peers: [GUN_RELAY], localStorage: true, radisk: true });
+const gun = Gun({ peers: GUN_RELAY ? [GUN_RELAY] : [], localStorage: true, radisk: true });
 
 // ====== STATE ======
 let peerCount = 0;
