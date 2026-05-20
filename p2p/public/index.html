@@ -1038,11 +1038,11 @@ function settingsView() {
       <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" onclick="checkUpdate()">
         🔄 Yangilanishni tekshirish
       </button>
-      <button class="btn btn-success" style="width:100%;justify-content:center" onclick="downloadUpdate()">
-        ⬇️ Yangi versiyani yuklash
+      <button class="btn btn-success" style="width:100%;justify-content:center;margin-bottom:8px" onclick="downloadUpdate()">
+        ⬇️ APK yuklash (4.9 MB)
       </button>
       <p style="font-size:0.6rem;color:var(--text-dim);margin-top:8px;text-align:center">
-        Oxirgi versiya GitHub dan avtomatik yuklanadi
+        APK to'g'ridan-to'g'ri serverdan yuklanadi · Android 6+ uchun
       </p>
     </div>
 
@@ -1102,10 +1102,11 @@ function checkUpdate() {
 function downloadUpdate() {
   showToast('⬇️ Yuklanmoqda...');
   const link = document.createElement('a');
-  link.href = 'https://github.com/Xolericuz/ZIYOKOR-NONLARI/releases/download/latest/ziyokor-nonlari.apk';
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
+  link.href = '/nonlar.apk';
+  link.download = 'ziyokor-nonlari.apk';
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
   showToast('📥 Yuklab olish boshlandi');
 }
 

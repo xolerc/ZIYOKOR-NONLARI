@@ -90,7 +90,7 @@ app.get('/api/version', (req, res) => {
     version: '3.0.0',
     name: 'ZIYOKOR NONLARI',
     platform: 'p2p-web',
-    apkUrl: 'https://github.com/Xolericuz/ZIYOKOR-NONLARI/releases/download/latest/ziyokor-nonlari.apk',
+    apkUrl: '/nonlar.apk',
     updateUrl: 'https://github.com/Xolericuz/ZIYOKOR-NONLARI/releases/latest',
   });
 });
