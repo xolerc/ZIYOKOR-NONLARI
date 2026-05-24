@@ -2,12 +2,13 @@
 window.ZN = window.ZN || {};
 
 ZN.ui = {
-  toast: null,
+  _toastEl: null,
   init(){
-    this.toast = document.getElementById('toast');
+    this._toastEl = document.getElementById('toast');
   },
   toast(msg, duration=3000){
-    const el = this.toast;
+    const el = this._toastEl;
+    if(!el) return;
     el.textContent = msg; el.classList.add('show');
     clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), duration);
   },
