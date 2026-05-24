@@ -1,14 +1,18 @@
 {
   "name": "ziyokor-p2p",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "description": "ZIYOKOR NONLARI — P2P marketplace with persistent Gun.js peer",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "cors": "^2.8.6",
+    "express": "^4.21.0",
     "gun": "^0.9.999",
     "ws": "^8.16.0"
   }

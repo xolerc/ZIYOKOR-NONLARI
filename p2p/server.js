@@ -12,11 +12,14 @@ const Gun = require('gun');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors');
 
 const PORT = process.env.PORT || 3456;
 const DATA_FILE = path.join(__dirname, 'data.json');
 
 const app = express();
+app.enable('trust proxy');
+app.use(cors({ origin: true, credentials: true }));
 const server = http.createServer(app);
 
 // Load persisted data from disk (Gun.js RAD backup)

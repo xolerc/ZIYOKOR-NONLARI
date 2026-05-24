@@ -13,49 +13,57 @@
 :root{
   --glass:rgba(255,255,255,0.05);
   --glass-border:rgba(255,255,255,0.08);
-  --glass-hover:rgba(255,255,255,0.1);
   --text:#f0ece6;
   --text-dim:rgba(240,236,230,0.5);
   --text-bright:#fff;
   --gold:#d4a574;
+  --gold-light:#e8c9a6;
   --gold-dim:rgba(212,165,116,0.3);
   --accent:#e86a3a;
   --green:#4caf50;
   --blue:#42a5f5;
   --purple:#ab47bc;
   --orange:#ffa726;
+  --red:#ff6b6b;
   --bg:#0a0806;
   --card:rgba(255,255,255,0.04);
   --radius:16px;
   --transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
 }
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5;min-height:100dvh;padding-bottom:100px}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5;min-height:100dvh;padding-bottom:90px}
+::selection{background:var(--gold);color:#000}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:4px}
 
 .btn{padding:10px 22px;border-radius:100px;border:none;font-size:0.8rem;font-weight:600;cursor:pointer;transition:var(--transition);font-family:inherit;display:inline-flex;align-items:center;gap:6px}
 .btn-primary{background:linear-gradient(135deg,#b8854a,var(--gold));color:#fff}
-.btn-primary:hover{opacity:0.9}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
 .btn-ghost{background:var(--glass);border:1px solid var(--glass-border);color:var(--text-dim)}
 .btn-ghost:hover{color:var(--text);border-color:var(--gold)}
 .btn-success{background:var(--green);color:#fff}
-.btn-danger{background:rgba(255,107,107,0.15);color:#ff6b6b;border:1px solid rgba(255,107,107,0.3)}
+.btn-danger{background:rgba(255,107,107,0.15);color:var(--red);border:1px solid rgba(255,107,107,0.3)}
 .btn-sm{padding:6px 14px;font-size:0.7rem}
+.btn:active{transform:scale(0.97)}
 
-.card{background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px}
+.card{background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px;backdrop-filter:blur(8px);transition:var(--transition)}
+.card:hover{border-color:rgba(255,255,255,0.12)}
 input,select,textarea{background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:0.85rem;outline:none;width:100%;font-family:inherit;transition:var(--transition)}
-input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
 select option{background:#0a0806}
 label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 
-.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(10,8,6,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);position:sticky;top:0;z-index:1000}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(10,8,6,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--glass-border);position:sticky;top:0;z-index:1000}
 .nav-logo{font-size:0.95rem;font-weight:700;color:var(--text-bright);display:flex;align-items:center;gap:8px}
 .nav-logo span{color:var(--gold)}
 .nav-info{display:flex;align-items:center;gap:10px;font-size:0.7rem;color:var(--text-dim)}
 
-.tab-bar{display:flex;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--glass-border);position:sticky;top:48px;z-index:999;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tab-btn{padding:10px 18px;font-size:0.72rem;font-weight:500;color:var(--text-dim);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;border-bottom:2px solid transparent;transition:var(--transition)}
+.tab-bar{display:flex;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--glass-border);position:sticky;top:48px;z-index:999;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:10px 16px;font-size:0.72rem;font-weight:500;color:var(--text-dim);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;border-bottom:2px solid transparent;transition:var(--transition);flex-shrink:0}
 .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-.content{padding:16px;max-width:1000px;margin:0 auto}
+.content{padding:16px;max-width:1000px;margin:0 auto;animation:fadeUp 0.35s ease}
 .section-title{font-size:1.15rem;font-weight:700;color:var(--text-bright);margin-bottom:4px}
 .section-sub{color:var(--text-dim);font-size:0.75rem;margin-bottom:16px}
 
@@ -65,15 +73,17 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 .empty-state .hint{font-size:0.68rem;opacity:0.6}
 
 .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.prod-card{background:var(--card);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;cursor:pointer;transition:var(--transition)}
+.prod-card:hover{transform:translateY(-3px);border-color:var(--gold-dim)}
 .prod-name{font-size:0.82rem;font-weight:600;color:var(--text-bright);margin-top:6px}
 .prod-price{font-size:0.9rem;font-weight:700;color:var(--gold)}
 .prod-price sub{font-size:0.55rem;color:var(--text-dim);font-weight:400}
 
-.bakery-item{display:flex;align-items:center;gap:12px;padding:12px 14px}
-.bakery-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.bakery-info{flex:1}
-.bakery-name{font-size:0.85rem;font-weight:600;color:var(--text-bright)}
-.bakery-detail{font-size:0.68rem;color:var(--text-dim);margin-top:2px}
+.badge{font-size:0.6rem;padding:3px 10px;border-radius:100px;font-weight:600;display:inline-block}
+.badge-gold{background:rgba(212,165,116,0.9);color:#fff}
+.badge-accent{background:rgba(232,106,58,0.9);color:#fff}
+.badge-green{background:rgba(100,200,100,0.9);color:#fff}
+.badge-blue{background:rgba(100,180,255,0.9);color:#fff}
 
 .status-badge{font-size:0.6rem;padding:3px 10px;border-radius:100px;font-weight:600;display:inline-block}
 .status-pending{background:rgba(255,193,7,0.15);color:#ffc107}
@@ -82,51 +92,64 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 .status-ready{background:rgba(76,175,80,0.15);color:var(--green)}
 .status-delivering{background:rgba(255,167,38,0.15);color:var(--orange)}
 .status-delivered{background:rgba(76,175,80,0.25);color:#81c784}
-.status-rejected{background:rgba(255,107,107,0.15);color:#ff6b6b}
+.status-rejected{background:rgba(255,107,107,0.15);color:var(--red)}
 
-.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
 .modal-overlay.active{opacity:1;pointer-events:all}
-.modal{background:rgba(16,12,8,0.97);border:1px solid var(--glass-border);border-radius:20px;max-width:460px;width:90vw;padding:24px;max-height:85vh;overflow-y:auto;transform:scale(0.92);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1)}
-.modal-overlay.active .modal{transform:scale(1)}
+.modal{background:rgba(16,12,8,0.97);border:1px solid var(--glass-border);border-radius:20px;max-width:460px;width:90vw;padding:24px;max-height:85vh;overflow-y:auto;transform:scale(0.92) translateY(20px);transition:transform 0.35s cubic-bezier(0.16,1,0.3,1)}
+.modal-overlay.active .modal{transform:scale(1) translateY(0)}
 
-.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(16,12,8,0.95);border:1px solid var(--glass-border);backdrop-filter:blur(20px);color:var(--text);border-radius:12px;padding:12px 20px;font-size:0.82rem;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.4);display:none;max-width:90vw;text-align:center;line-height:1.4}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(16,12,8,0.95);border:1px solid var(--glass-border);backdrop-filter:blur(20px);color:var(--text);border-radius:12px;padding:12px 22px;font-size:0.82rem;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.5);display:none;max-width:90vw;text-align:center;line-height:1.4}
 .toast.show{display:block;animation:fadeIn 0.3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-#map{width:100%;height:400px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border);margin-bottom:12px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-40px,60px) scale(1.1)}66%{transform:translate(40px,-30px) scale(0.95)}}
+
+#map{width:100%;height:55vh;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border)}
 .leaflet-container{background:#0a0806!important}
-.leaflet-control-zoom a{background:rgba(16,12,8,0.9)!important;color:var(--text)!important;border-color:var(--glass-border)!important}
+.leaflet-control-zoom a{background:rgba(16,12,8,0.92)!important;color:var(--text)!important;border-color:var(--glass-border)!important}
 .leaflet-popup-content-wrapper{background:rgba(16,12,8,0.96)!important;color:var(--text)!important;border:1px solid var(--glass-border)!important;border-radius:12px!important}
-.leaflet-popup-tip{background:rgba(16,12,8,0.96)!important;border:1px solid var(--glass-border)!important}
+.leaflet-popup-tip{background:rgba(16,12,8,0.96)!important}
 .leaflet-popup-content{margin:10px 14px!important;font-size:0.8rem!important;font-family:'Inter',sans-serif!important}
 
-.location-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px}
-.dot-green{background:#4caf50;box-shadow:0 0 6px rgba(76,175,80,0.5)}
-.dot-yellow{background:#ffc107;box-shadow:0 0 6px rgba(255,193,7,0.5)}
-.dot-red{background:#ff6b6b;box-shadow:0 0 6px rgba(255,107,107,0.5)}
-.dot-purple{background:#ab47bc;box-shadow:0 0 6px rgba(171,71,188,0.5)}
-.dot-orange{background:#ffa726;box-shadow:0 0 6px rgba(255,167,38,0.5)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--glass-border);border-radius:12px;padding:14px;text-align:center;transition:var(--transition)}
+.stat-card:hover{border-color:var(--gold-dim)}
+.stat-num{font-size:1.3rem;font-weight:700;color:var(--gold)}
+.stat-label{font-size:0.63rem;color:var(--text-dim);margin-top:2px}
 
-.gps-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:10px;font-size:0.68rem;color:var(--green);margin-bottom:12px}
-.gps-bar.off{background:rgba(255,107,107,0.08);border-color:rgba(255,107,107,0.2);color:#ff6b6b}
-.gps-bar .pulse{width:8px;height:8px;border-radius:50%;background:#4caf50;animation:pulse 1.5s infinite}
+.gps-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:10px;font-size:0.68rem;color:var(--green);margin-bottom:12px}
+.gps-bar.off{background:rgba(255,107,107,0.08);border-color:rgba(255,107,107,0.2);color:var(--red)}
+.gps-bar .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;flex-shrink:0}
 .gps-bar.off .pulse{background:#666;animation:none}
-@keyframes pulse{0%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}
 
-.coords-text{font-family:monospace;font-size:0.65rem;color:var(--text-dim)}
-.role-badge{font-size:0.55rem;padding:2px 8px;border-radius:100px;font-weight:600}
-.role-seller{background:rgba(212,165,116,0.15);color:var(--gold)}
-.role-customer{background:rgba(66,165,245,0.15);color:var(--blue)}
-.role-delivery{background:rgba(171,71,188,0.15);color:var(--purple)}
-
-.dist-badge{font-size:0.6rem;color:var(--text-dim);background:var(--glass);padding:2px 8px;border-radius:100px}
-
-.legend-row{display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--text-dim);margin-bottom:4px}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:0.68rem;color:var(--text-dim);margin-bottom:4px}
 .legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.legend-dot.nonvoy{background:var(--gold)}
-.legend-dot.xaridor{background:var(--blue)}
-.legend-dot.yetkazish{background:var(--purple)}
-.legend-dot.siz{background:var(--green)}
+.legend-dot.seller{background:var(--gold)}
+.legend-dot.customer{background:var(--blue)}
+.legend-dot.delivery{background:var(--purple)}
+.legend-dot.me{background:var(--green)}
+
+.login-card{background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:24px;padding:40px 36px;max-width:400px;width:90vw;text-align:center;backdrop-filter:blur(16px)}
+.login-title{font-size:1.8rem;font-weight:800;color:var(--text-bright);margin-bottom:4px}
+.login-title span{color:var(--gold)}
+.login-sub{color:var(--text-dim);font-size:0.82rem;margin-bottom:24px}
+
+.order-card{border-left:3px solid var(--glass-border);margin-bottom:10px}
+.order-card.pending{border-left-color:var(--gold)}
+.order-card.delivering{border-left-color:var(--orange)}
+.order-card.delivered{border-left-color:var(--green)}
+.order-card.rejected{border-left-color:var(--red)}
+
+@media(max-width:480px){
+  .login-card{padding:28px 20px}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .content{padding:12px}
+  .modal{padding:18px;width:95vw}
+}
 </style>
 </head>
 <body>
@@ -134,8 +157,8 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 <div class="nav">
   <div class="nav-logo">ZIYOKOR <span>NONLARI</span></div>
   <div class="nav-info">
-    <span id="statusDot" style="width:6px;height:6px;border-radius:50%;background:#666"></span>
-    <span id="peerStatus">connecting...</span>
+    <span id="statusDot" style="width:6px;height:6px;border-radius:50%;background:#666;flex-shrink:0"></span>
+    <span id="peerStatus">ulanish...</span>
   </div>
 </div>
 
@@ -151,157 +174,127 @@ label{font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;display:block}
 
 <script>
 // ============================================================
-// ZIYOKOR NONLARI — GPS P2P Marketplace
-// Real-time location tracking for seller, customer, delivery
-// No fake data. Only real Gun.js peer-to-peer state.
+// ZIYOKOR NONLARI v3.0 — GPS P2P Marketplace
+// Combined: Customer · Seller · Driver · Admin
+// Tech: Gun.js P2P · Leaflet GPS · REST API
 // ============================================================
 
 const IS_CAPACITOR = !!(window.Capacitor && window.Capacitor.isNativePlatform());
 const GUN_RELAY = IS_CAPACITOR ? null : (window.location.origin + '/gun');
 
-// ====== GUN ======
+// ====== GUN INIT ======
 const gun = Gun({ peers: GUN_RELAY ? [GUN_RELAY] : [], localStorage: true, radisk: true });
 
 // ====== STATE ======
-let peerCount = 0;
-// Persistent user ID (localStorage, survives page reload)
-if (!localStorage.getItem('ziyokor_uid')) {
-  localStorage.setItem('ziyokor_uid', 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8));
+if (!localStorage.getItem('zn_uid')) {
+  localStorage.setItem('zn_uid', 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8));
 }
-let myNodeId = localStorage.getItem('ziyokor_uid');
-let myRole = null;
-let myName = '';
-let myBakeryName = '';
-let myPhone = '';
-let myProducts = [];
+const UID = localStorage.getItem('zn_uid');
+let peerCount = 0;
+let role = null, name = '', phone = '', bakeryName = '', vehicle = 'velo';
 let currentTab = 0;
-let cart = {};
-let selectedBakeryId = null;
-let myLat = null;
-let myLng = null;
-let gpsWatchId = null;
-let gpsActive = false;
+let cart = {}, selectedBakeryId = null;
+let myLat = null, myLng = null, gpsWatchId = null, gpsActive = false, mapInitialized = false;
+let mapInstance = null, mapMarkers = {}, deliveryLines = {};
+let bakeries = {}, orders = {}, myOrders = {}, liveLocations = {};
 
-// Live P2P data stores
-let bakeries = {};
-let orders = {};
-let myOrders = {};
-let liveLocations = {}; // peerId -> { lat, lng, role, name, updatedAt }
+// Chat state
+let chatContact = null, chatMessages = {}, chatUnread = {}, chatOpen = false;
 
-// Map instance
-let mapInstance = null;
-let mapMarkers = {};
-let deliveryLines = {};
+// ====== PRODUCT DATA ======
+const DEFAULT_PRODUCTS = [
+  {id:1,name:'Oq non',price:5000,cat:'tandir',desc:'Klassik oq non',badge:'Arzon'},
+  {id:2,name:'Tandir noni',price:8000,cat:'tandir',desc:'An\'anaviy tandirda pishgan',badge:'🔥 Best'},
+  {id:3,name:'Patir non',price:10000,cat:'tandir',desc:'Qatlamli yog\'li patir',badge:''},
+  {id:4,name:'Kulcha non',price:5000,cat:'tandir',desc:'Kichik yumaloq kulcha',badge:'Arzon'},
+  {id:5,name:'Samarqand noni',price:20000,cat:'premium',desc:'Mashhur Samarqand noni',badge:'⭐ Premium'},
+  {id:6,name:'Buxoro noni',price:18000,cat:'premium',desc:'Buxorocha maxsus retsept',badge:'⭐ Premium'},
+  {id:7,name:'Farg\'ona noni',price:8000,cat:'tandir',desc:'Farg\'ona usulida pishgan',badge:''},
+  {id:8,name:'Qora non',price:7000,cat:'sog-lom',desc:'Kepakli foydali qora non',badge:'🌿 Organik'},
+  {id:9,name:'Zog\'ora non',price:6000,cat:'sog-lom',desc:'Makkajo\'xori unidan',badge:'🌿 Organik'},
+  {id:10,name:'Yupqa non',price:5000,cat:'tandir',desc:'Yupqa yoyilgan tez non',badge:'Arzon'},
+  {id:11,name:'Qalin non',price:7000,cat:'tandir',desc:'Qalin yumshoq non',badge:''},
+  {id:12,name:'Suzma non',price:7000,cat:'tandir',desc:'Suzma qo\'shilgan',badge:''},
+  {id:13,name:'Qatiqli non',price:8000,cat:'qandol',desc:'Nordonmaza non',badge:''},
+  {id:14,name:'Yog\'li non',price:10000,cat:'qandol',desc:'Sariyog\' qo\'shilgan',badge:''},
+  {id:15,name:'Pishloqli non',price:12000,cat:'qandol',desc:'Erigan pishloqli',badge:'🆕 Yangi'},
+  {id:16,name:'Go\'shtli non',price:25000,cat:'maxsus',desc:'Go\'sht bilan to\'ldirilgan',badge:'🔥 Best'},
+  {id:17,name:'Tuxumli non',price:10000,cat:'qandol',desc:'Tuxum qo\'shilgan',badge:''},
+  {id:18,name:'Ziravorli non',price:8000,cat:'maxsus',desc:'Ziravorlar bilan',badge:''},
+  {id:19,name:'Kunjutli non',price:8000,cat:'tandir',desc:'Kunjut urug\'lari bilan',badge:'🆕 Yangi'},
+  {id:20,name:'Qovoqli non',price:9000,cat:'sog-lom',desc:'Qovoq pyuresi bilan',badge:'🆕 Yangi'},
+  {id:21,name:'Kartoshkali non',price:8000,cat:'maxsus',desc:'Kartoshka qo\'shilgan',badge:''},
+  {id:22,name:'Piyozli non',price:7000,cat:'maxsus',desc:'Piyoz bilan xushbo\'y',badge:''},
+  {id:23,name:'Ko\'k noni',price:8000,cat:'sog-lom',desc:'Ko\'katlar bilan',badge:'🌿 Organik'},
+  {id:24,name:'Asalli non',price:15000,cat:'qandol',desc:'Asal qo\'shilgan shirin',badge:'🆕 Yangi'},
+  {id:25,name:'Mayizli non',price:12000,cat:'qandol',desc:'Mayiz bilan shirin',badge:''},
+  {id:26,name:'Yong\'oqli non',price:20000,cat:'premium',desc:'Yong\'oq bilan',badge:'⭐ Premium'},
+  {id:27,name:'Bodomli non',price:25000,cat:'premium',desc:'Bodom uni bilan',badge:'⭐ Premium'},
+  {id:28,name:'Non to\'plami',price:30000,cat:'maxsus',desc:'5 xil non turidan',badge:'🔥 Best'},
+  {id:29,name:'Bayram noni',price:25000,cat:'premium',desc:'Bayramlar uchun',badge:'⭐ Premium'},
+  {id:30,name:'Maxsus non',price:30000,cat:'maxsus',desc:'Exclusive retsept',badge:'⭐ Premium'},
+];
 
 // ====== PEER TRACKING ======
-gun.on('hi', peer => {
-  peerCount = Object.keys(Gun.peers || {}).length + 1;
-  updatePeerUI();
-});
-gun.on('bye', peer => {
-  peerCount = Object.keys(Gun.peers || {}).length;
-  updatePeerUI();
-});
+gun.on('hi', p => { peerCount = Object.keys(Gun.peers||{}).length + 1; updatePeerUI(); });
+gun.on('bye', p => { peerCount = Object.keys(Gun.peers||{}).length; updatePeerUI(); });
 
 function updatePeerUI() {
   const dot = document.getElementById('statusDot');
-  const status = document.getElementById('peerStatus');
+  const st = document.getElementById('peerStatus');
   const online = peerCount > 0;
   dot.style.background = online ? '#4caf50' : '#666';
-  if (online) dot.style.boxShadow = '0 0 6px rgba(76,175,80,0.5)';
-  else dot.style.boxShadow = 'none';
-  status.textContent = online ? `${peerCount} peer(s) online` : 'offline';
-  if (!online) status.style.color = 'var(--text-dim)';
-  else status.style.color = '#4caf50';
+  dot.style.boxShadow = online ? '0 0 6px rgba(76,175,80,0.5)' : 'none';
+  st.textContent = online ? `${peerCount} peer(s)` : 'offline';
+  st.style.color = online ? '#4caf50' : 'var(--text-dim)';
 }
 
-// ====== GPS ENGINE ======
+// ====== GPS ======
 function startGps() {
-  if (!navigator.geolocation) {
-    showToast('⚠️ Brauzer GPS ni qo\'llab-quvvatlamaydi');
-    return;
-  }
   if (gpsWatchId !== null) return;
+  if (!navigator.geolocation) { toast('⚠️ Brauzer GPS ni qo\'llab-quvvatlamaydi'); return; }
   gpsWatchId = navigator.geolocation.watchPosition(pos => {
-    myLat = pos.coords.latitude;
-    myLng = pos.coords.longitude;
-    gpsActive = true;
-    // Publish location to P2P graph
-    gun.get('locations').get(myNodeId).put({
-      lat: myLat,
-      lng: myLng,
-      role: myRole,
-      name: myName,
-      bakery: myBakeryName,
-      online: true,
-      updatedAt: Date.now()
-    });
-    // Also update bakery location if seller
-    if (myRole === 'seller') {
-      gun.get('bakeries').get(myNodeId).get('location').put({ lat: myLat, lng: myLng });
-    }
+    myLat = pos.coords.latitude; myLng = pos.coords.longitude; gpsActive = true;
+    gun.get('locations').get(UID).put({ lat: myLat, lng: myLng, role, name, bakery: bakeryName, online: true, updatedAt: Date.now() });
+    if (role === 'seller') gun.get('bakeries').get(UID).get('location').put({ lat: myLat, lng: myLng });
     renderGpsBar();
-  }, err => {
-    console.warn('GPS error:', err.message);
-    gpsActive = false;
-    renderGpsBar();
-  }, {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 3000
-  });
+  }, err => { gpsActive = false; renderGpsBar(); }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 3000 });
 }
 
 function stopGps() {
-  if (gpsWatchId !== null) {
-    navigator.geolocation.clearWatch(gpsWatchId);
-    gpsWatchId = null;
-  }
+  if (gpsWatchId !== null) { navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
   gpsActive = false;
-  // Mark offline in P2P
-  gun.get('locations').get(myNodeId).put({ online: false, updatedAt: Date.now() });
+  gun.get('locations').get(UID).put({ online: false, updatedAt: Date.now() });
   renderGpsBar();
 }
 
 function renderGpsBar() {
-  const bar = document.getElementById('gpsBar');
-  if (!bar || !myRole) return;
-  const el = bar;
+  const el = document.getElementById('gpsBar');
+  if (!el || !role) return;
   if (gpsActive && myLat && myLng) {
     el.className = 'gps-bar';
-    el.innerHTML = `<span class="pulse"></span><span>📡 GPS: ${myLat.toFixed(5)}, ${myLng.toFixed(5)}</span><span style="margin-left:auto;font-size:0.6rem">${myLat.toFixed(2)}°N, ${myLng.toFixed(2)}°E</span>`;
+    el.innerHTML = `<span class="pulse"></span><span>📍 ${myLat.toFixed(5)}, ${myLng.toFixed(5)}</span><span style="margin-left:auto;font-size:0.6rem;opacity:0.6">${myLat.toFixed(2)}°N, ${myLng.toFixed(2)}°E</span>`;
   } else {
     el.className = 'gps-bar off';
-    el.innerHTML = `<span class="pulse"></span><span>📍 GPS: ${gpsWatchId !== null ? 'kutilyapti...' : 'faol emas'}</span><button class="btn btn-sm btn-ghost" style="margin-left:auto;padding:2px 10px;font-size:0.6rem" onclick="startGps()">Yoqish</button>`;
+    el.innerHTML = `<span class="pulse"></span><span>📍 GPS: ${gpsWatchId!==null?'kutilyapti...':'faol emas'}</span><button class="btn btn-sm btn-ghost" style="margin-left:auto;padding:2px 10px;font-size:0.6rem" onclick="startGps()">Yoqish</button>`;
   }
 }
 
-// ====== LIVE LOCATIONS SUBSCRIPTION ======
+// ====== LIVE LOCATIONS ======
 function subscribeLocations() {
   gun.get('locations').map().on((loc, id) => {
-    if (loc && loc.lat && loc.lng) {
-      liveLocations[id] = { ...loc, id };
-    }
+    if (loc && loc.lat && loc.lng) liveLocations[id] = { ...loc, id };
   });
 }
 
-// ====== CHAT SYSTEM ======
-let chatContact = null; // current chat contact ID
-let chatMessages = {};  // roomId -> [msg, ...]
-let chatUnread = {};    // roomId -> count
-let chatOpen = false;
-
-function chatRoomId(peerId) {
-  return [myNodeId, peerId].sort().join('_');
-}
+// ====== CHAT ======
+function chatRoomId(peerId) { return [UID, peerId].sort().join('_'); }
 
 function subscribeChats() {
   gun.get('chat_messages').map().on((msgs, roomId) => {
-    if (!roomId || !msgs) return;
-    // Only subscribe to rooms we're part of
-    if (!roomId.includes(myNodeId)) return;
+    if (!roomId || !roomId.includes(UID) || !msgs) return;
     const list = Object.values(msgs).filter(m => m && m.t);
-    chatMessages[roomId] = list.sort((a,b) => (a.t || 0) - (b.t || 0));
+    chatMessages[roomId] = list.sort((a,b) => (a.t||0) - (b.t||0));
     if (chatOpen) renderChat();
     updateChatBadge();
   });
@@ -310,36 +303,33 @@ function subscribeChats() {
 function openChat(peerId, peerName) {
   chatContact = { id: peerId, name: peerName || 'Foydalanuvchi' };
   chatOpen = true;
-  const room = chatRoomId(peerId);
-  chatUnread[room] = 0;
+  chatUnread[chatRoomId(peerId)] = 0;
   showModal(chatModalHtml());
   renderChat();
 }
 
 function chatModalHtml() {
-  if (!chatContact) return `<div style="text-align:center;padding:40px;color:var(--text-dim)">💬 Foydalanuvchi tanlanmagan</div>`;
+  if (!chatContact) return '<div class="empty-state"><span class="icon">💬</span><p>Foydalanuvchi tanlanmagan</p></div>';
   const room = chatRoomId(chatContact.id);
   const msgs = chatMessages[room] || [];
   const otherLoc = liveLocations[chatContact.id];
   const online = otherLoc?.online ? '🟢 Online' : '🔴 Offline';
   return `
-    <div style="display:flex;flex-direction:column;height:65vh">
+    <div style="display:flex;flex-direction:column;height:60vh">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div>
-          <div style="font-weight:600;color:var(--text-bright)">💬 ${chatContact.name}</div>
-          <div style="font-size:0.6rem;color:var(--text-dim)">${online} · ${chatContact.id.slice(-8)}</div>
+          <div style="font-weight:600;color:var(--text-bright);font-size:0.9rem">💬 ${chatContact.name}</div>
+          <div style="font-size:0.6rem;color:var(--text-dim)">${online}</div>
         </div>
         <button class="btn btn-ghost btn-sm" onclick="closeChat()">✕</button>
       </div>
-      <div id="chatMessages" style="flex:1;overflow-y:auto;padding:8px;background:var(--glass);border-radius:var(--radius);margin-bottom:8px;display:flex;flex-direction:column;gap:6px">
-        ${msgs.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:0.75rem">Xabarlar yo\'q. Xabar yuboring!</div>' : ''}
-        ${msgs.map(m => {
-          const isMe = m.f === myNodeId;
+      <div id="chatMessages" style="flex:1;overflow-y:auto;padding:10px;background:var(--glass);border-radius:var(--radius);margin-bottom:8px;display:flex;flex-direction:column;gap:6px">
+        ${msgs.length === 0 ? '<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:0.75rem">Xabarlar yo\'q</div>' : msgs.map(m => {
+          const isMe = m.f === UID;
           const time = m.t ? new Date(m.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
-          let content = m.text || '';
-          if (m.type === 'image') {
-            content = `<img src="${m.data}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${m.data}','_blank')" />`;
-          }
+          let content = escHtml(m.text||'');
+          if (m.type === 'image') content = `<img src="${m.data}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${m.data}','_blank')" />`;
+          if (m.type === 'video') content = `<video src="${m.data}" controls style="max-width:200px;border-radius:8px"></video>`;
           return `<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'}">
             <div style="background:${isMe?'var(--gold)':'var(--card)'};color:${isMe?'#000':'var(--text)'};padding:8px 12px;border-radius:12px;font-size:0.78rem;max-width:80%;word-break:break-word">${content}</div>
             <div style="font-size:0.5rem;color:var(--text-dim);margin-top:2px">${time}</div>
@@ -347,12 +337,11 @@ function chatModalHtml() {
         }).join('')}
       </div>
       <div style="display:flex;gap:6px">
-        <button class="btn btn-ghost btn-sm" onclick="attachImage()" style="font-size:1rem;padding:8px 10px">📷</button>
+        <button class="btn btn-ghost btn-sm" onclick="attachImage()" style="font-size:1.1rem;padding:8px 10px">📷</button>
         <input id="chatInput" style="flex:1" placeholder="Xabar yozing..." onkeydown="if(event.key==='Enter')sendMessage()" />
         <button class="btn btn-primary" onclick="sendMessage()" style="padding:8px 16px">➤</button>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function sendMessage() {
@@ -362,28 +351,22 @@ function sendMessage() {
   input.value = '';
   const room = chatRoomId(chatContact.id);
   const msgId = 'msg_' + Date.now().toString(36) + Math.random().toString(36).slice(2,4);
-  const msg = { f: myNodeId, t: Date.now(), text, type: 'text' };
-  gun.get('chat_messages').get(room).get(msgId).put(msg);
-  showToast('✅ Xabar yuborildi');
+  gun.get('chat_messages').get(room).get(msgId).put({ f: UID, t: Date.now(), text, type: 'text' });
 }
 
 function attachImage() {
   const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*,video/*';
+  input.type = 'file'; input.accept = 'image/*,video/*';
   input.onchange = e => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 500000) { showToast('⚠️ Fayl juda katta (max 500KB)'); return; }
+    if (file.size > 500000) { toast('⚠️ Fayl juda katta (max 500KB)'); return; }
     const reader = new FileReader();
     reader.onload = ev => {
-      const data = ev.target.result;
-      const isVideo = file.type.startsWith('video/');
       const room = chatRoomId(chatContact.id);
       const msgId = 'msg_' + Date.now().toString(36) + Math.random().toString(36).slice(2,4);
-      const msg = { f: myNodeId, t: Date.now(), text: file.name, type: isVideo ? 'video' : 'image', data };
-      gun.get('chat_messages').get(room).get(msgId).put(msg);
-      showToast('📷 Rasm yuborildi');
+      gun.get('chat_messages').get(room).get(msgId).put({ f: UID, t: Date.now(), text: file.name, type: file.type.startsWith('video/')?'video':'image', data: ev.target.result });
+      toast('📷 Yuborildi');
     };
     reader.readAsDataURL(file);
   };
@@ -394,16 +377,12 @@ function renderChat() {
   const container = document.getElementById('chatMessages');
   if (!container || !chatContact) return;
   const room = chatRoomId(chatContact.id);
-  const msgs = chatMessages[room] || [];
-  container.innerHTML = msgs.map(m => {
-    const isMe = m.f === myNodeId;
+  container.innerHTML = (chatMessages[room]||[]).map(m => {
+    const isMe = m.f === UID;
     const time = m.t ? new Date(m.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
-    let content = m.text || '';
-    if (m.type === 'image') {
-      content = `<img src="${m.data}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${m.data}','_blank')" />`;
-    } else if (m.type === 'video') {
-      content = `<video src="${m.data}" controls style="max-width:200px;border-radius:8px"></video>`;
-    }
+    let content = escHtml(m.text||'');
+    if (m.type === 'image') content = `<img src="${m.data}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${m.data}','_blank')" />`;
+    if (m.type === 'video') content = `<video src="${m.data}" controls style="max-width:200px;border-radius:8px"></video>`;
     return `<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'}">
       <div style="background:${isMe?'var(--gold)':'var(--card)'};color:${isMe?'#000':'var(--text)'};padding:8px 12px;border-radius:12px;font-size:0.78rem;max-width:80%;word-break:break-word">${content}</div>
       <div style="font-size:0.5rem;color:var(--text-dim);margin-top:2px">${time}</div>
@@ -412,10 +391,38 @@ function renderChat() {
   container.scrollTop = container.scrollHeight;
 }
 
-function closeChat() {
-  chatOpen = false;
-  chatContact = null;
-  closeModal();
+function closeChat() { chatOpen = false; chatContact = null; closeModal(); }
+
+function allContacts() {
+  const c = [];
+  Object.entries(liveLocations).forEach(([id, loc]) => {
+    if (id === UID) return;
+    c.push({ id, name: loc.role==='seller'?'🏪 '+(loc.bakery||loc.name):loc.role==='delivery'?'🚚 '+loc.name:'🛒 '+loc.name, role: loc.role, online: loc.online });
+  });
+  Object.entries(bakeries).forEach(([id, b]) => {
+    if (id !== UID && !c.find(x => x.id === id)) c.push({ id, name: '🏪 '+(b.name||b.owner), role: 'seller', online: b.online });
+  });
+  return c;
+}
+
+function showChatContacts() {
+  const contacts = allContacts();
+  if (!contacts.length) { toast('💬 Tarmoqda foydalanuvchi yo\'q'); return; }
+  showModal(`
+    <div style="min-height:40vh">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-weight:600;color:var(--text-bright)">💬 Xabarlar</span>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+      </div>
+      ${contacts.map(c => {
+        const unread = chatUnread[chatRoomId(c.id)]||0;
+        return `<div class="card bakery-item" style="cursor:pointer;margin-bottom:6px;padding:12px 14px" onclick="closeModal();openChat('${c.id}','${escJs(c.name)}')">
+          <div class="bakery-icon" style="font-size:1.2rem">${c.online?'🟢':'🔴'}</div>
+          <div class="bakery-info"><div class="bakery-name">${c.name}</div><div class="bakery-detail" style="font-size:0.62rem">${c.online?'Online':'Offline'}${unread?` · <span style="color:var(--gold);font-weight:600">${unread} ta</span>`:''}</div></div>
+          <span style="font-size:1.2rem">💬</span>
+        </div>`;
+      }).join('')}
+    </div>`);
 }
 
 function updateChatBadge() {
@@ -426,264 +433,121 @@ function updateChatBadge() {
   if (badge) badge.textContent = total || '';
 }
 
-// Contact list: all reachable users
-function allContacts() {
-  const contacts = [];
-  // All online/offline users from locations
-  Object.entries(liveLocations).forEach(([id, loc]) => {
-    if (id === myNodeId) return;
-    const label = loc.role === 'seller' ? '🏪 ' + (loc.bakery || loc.name) :
-                 loc.role === 'delivery' ? '🚚 ' + loc.name :
-                 '🛒 ' + loc.name;
-    contacts.push({ id, name: label, role: loc.role, online: loc.online });
-  });
-  // Also add bakeries (even if offline)
-  Object.entries(bakeries).forEach(([id, b]) => {
-    if (id === myNodeId) return;
-    if (!contacts.find(c => c.id === id)) {
-      contacts.push({ id, name: '🏪 ' + (b.name || b.owner), role: 'seller', online: b.online });
-    }
-  });
-  return contacts;
-}
-
-function chatFabHtml() {
-  return `<div id="chatFabContainer" style="position:fixed;bottom:90px;right:16px;z-index:999">
-    <button id="chatFab" class="btn btn-primary" style="width:56px;height:56px;border-radius:50%;padding:0;justify-content:center;font-size:1.4rem;box-shadow:0 4px 16px rgba(0,0,0,0.4);position:relative" onclick="showChatContacts()">
-      💬<span class="badge" style="position:absolute;top:-4px;right:-4px;background:#ff6b6b;color:#fff;font-size:0.55rem;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700"></span>
-    </button>
-  </div>`;
-}
-
-function showChatContacts() {
-  const contacts = allContacts();
-  if (!contacts.length) { showToast('💬 Tarmoqda boshqa foydalanuvchilar yo\'q'); return; }
-  showModal(`
-    <div style="min-height:40vh">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <span style="font-weight:600;color:var(--text-bright)">💬 Xabarlar</span>
-        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
-      </div>
-      ${contacts.map(c => {
-        const room = chatRoomId(c.id);
-        const unread = chatUnread[room] || 0;
-        return `<div class="bakery-item" style="cursor:pointer;margin-bottom:4px" onclick="openChat('${c.id}','${c.name.replace(/'/g,"\\'")}')">
-          <div class="bakery-icon" style="font-size:1.2rem">${c.online ? '🟢' : '🔴'}</div>
-          <div class="bakery-info">
-            <div class="bakery-name">${c.name}</div>
-            <div class="bakery-detail" style="font-size:0.62rem">${c.online ? 'Online' : 'Offline'} · ${c.id.slice(-8)}${unread ? ` · <span style="color:var(--gold);font-weight:600">${unread} ta yangi</span>` : ''}</div>
-          </div>
-          <span style="font-size:1.2rem">💬</span>
-        </div>`;
-      }).join('')}
-    </div>
-  `);
-}
-
-// Hook into existing message subscription to count unread
-const _origOn = gun.get('chat_messages').map().on;
-function countUnread() {
-  gun.get('chat_messages').map().on((msgs, roomId) => {
-    if (!roomId || !roomId.includes(myNodeId)) return;
-    const allMsgs = Object.values(msgs || {}).filter(m => m && m.t);
-    const lastRead = parseInt(localStorage.getItem('chat_last_' + roomId) || '0');
-    const unread = allMsgs.filter(m => m.f !== myNodeId && m.t > lastRead).length;
-    if (unread > 0) chatUnread[roomId] = unread;
-    updateChatBadge();
-  });
-}
-setTimeout(countUnread, 1000);
-
 // ====== LOGIN ======
 function showLogin() {
-  const html = `
+  document.getElementById('app').innerHTML = `
     <div style="max-width:420px;margin:40px auto;text-align:center">
-      <h1 style="font-size:1.6rem;font-weight:800;color:var(--text-bright);margin-bottom:4px">ZIYOKOR <span style="color:var(--gold)">NONLARI</span></h1>
-      <p style="color:var(--text-dim);font-size:0.8rem;margin-bottom:20px">P2P · GPS · Real-time · Decentralized</p>
-      <div class="card" style="text-align:left">
-        <div style="margin-bottom:12px">
-          <label>Rol</label>
-          <select id="loginRole">
-            <option value="seller">🏪 Nonvoy (sotuvchi)</option>
-            <option value="customer">🛒 Xaridor</option>
-            <option value="delivery">🚚 Yetkazib beruvchi</option>
-          </select>
+      <div class="login-card">
+        <div class="login-title">ZIYOKOR <span>NONLARI</span></div>
+        <p class="login-sub">P2P · GPS · Real-time · Decentralized</p>
+        <div style="text-align:left">
+          <div style="margin-bottom:12px">
+            <label>Rol</label>
+            <select id="loginRole">
+              <option value="customer">🛒 Xaridor</option>
+              <option value="seller">🏪 Nonvoy (sotuvchi)</option>
+              <option value="delivery">🚚 Yetkazib beruvchi</option>
+              <option value="admin">⚙️ Administrator</option>
+            </select>
+          </div>
+          <div style="margin-bottom:12px">
+            <label>Ism *</label>
+            <input id="loginName" placeholder="Ismingiz" required>
+          </div>
+          <div style="margin-bottom:12px">
+            <label>Telefon *</label>
+            <input id="loginPhone" placeholder="+998 XX XXX XX XX" required>
+          </div>
+          <div id="bakeryField" style="margin-bottom:12px;display:none">
+            <label>Nonvoyxona nomi *</label>
+            <input id="loginBakery" placeholder="Nonvoyxona nomi">
+          </div>
+          <div id="vehicleField" style="margin-bottom:16px;display:none">
+            <label>Transport</label>
+            <select id="loginVehicle">
+              <option value="velo">🚲 Velosiped</option>
+              <option value="moto">🏍 Mototsikl</option>
+              <option value="car">🚗 Mashina</option>
+              <option value="foot">🚶 Piyoda</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="login()">Kirish →</button>
+          <p style="color:var(--text-dim);font-size:0.6rem;margin-top:10px;text-align:center">📍 GPS joylashuv ulashiladi</p>
         </div>
-        <div style="margin-bottom:12px">
-          <label>Ismingiz *</label>
-          <input id="loginName" placeholder="Ismingiz" required>
-        </div>
-        <div style="margin-bottom:12px">
-          <label>Telefon *</label>
-          <input id="loginPhone" placeholder="+998 XX XXX XX XX" required>
-        </div>
-        <div style="margin-bottom:16px" id="bakeryField">
-          <label>Nonvoyxona nomi *</label>
-          <input id="loginBakery" placeholder="Nonvoyxona nomi">
-        </div>
-        <div style="margin-bottom:16px;display:none" id="vehicleField">
-          <label>Transport turi</label>
-          <select id="loginVehicle">
-            <option value="velo">🚲 Velosiped</option>
-            <option value="moto">🏍 Mototsikl</option>
-            <option value="car">🚗 Mashina</option>
-            <option value="foot">🚶 Piyoda</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="login()">Tarmoqqa ulanish →</button>
-        <p style="color:var(--text-dim);font-size:0.6rem;margin-top:10px;text-align:center">📍 GPS joylashuvni ulashish talab qilinadi</p>
       </div>
-    </div>
-  `;
-  document.getElementById('app').innerHTML = html;
-
+    </div>`;
   document.getElementById('loginRole').addEventListener('change', e => {
     document.getElementById('bakeryField').style.display = e.target.value === 'seller' ? 'block' : 'none';
     document.getElementById('vehicleField').style.display = e.target.value === 'delivery' ? 'block' : 'none';
   });
-  document.getElementById('bakeryField').style.display = 'block';
 }
 
 function login() {
-  const role = document.getElementById('loginRole').value;
-  const name = document.getElementById('loginName').value.trim();
-  const phone = document.getElementById('loginPhone').value.trim();
-  const bakeryName = document.getElementById('loginBakery')?.value?.trim() || '';
-  const vehicle = document.getElementById('loginVehicle')?.value || 'velo';
-
-  if (!name || !phone) { showToast('⚠️ Ism va telefon majburiy'); return; }
-  if (role === 'seller' && !bakeryName) { showToast('⚠️ Nonvoyxona nomini kiriting'); return; }
-
-  myRole = role;
-  myName = name;
-  myPhone = phone;
-  myBakeryName = bakeryName;
-
-  // Subscribe to locations
+  const r = document.getElementById('loginRole').value;
+  const n = document.getElementById('loginName').value.trim();
+  const p = document.getElementById('loginPhone').value.trim();
+  const b = document.getElementById('loginBakery')?.value?.trim() || '';
+  const v = document.getElementById('loginVehicle')?.value || 'velo';
+  if (!n || !p) { toast('⚠️ Ism va telefon majburiy'); return; }
+  if (r === 'seller' && !b) { toast('⚠️ Nonvoyxona nomini kiriting'); return; }
+  role = r; name = n; phone = p; bakeryName = b; vehicle = v;
   subscribeLocations();
-
-  // Initialize based on role
-  if (role === 'seller') initSeller();
-  else if (role === 'customer') initCustomer();
-  else initDelivery(vehicle);
-
-  // Start GPS tracking
+  subscribeChats();
+  if (r === 'seller') initSeller();
+  else if (r === 'customer') initCustomer();
+  else if (r === 'delivery') initDelivery();
+  else initAdmin();
   startGps();
-
   initTabs();
   render();
 }
 
-// ====== SELLER ======
+// ====== ROLE INIT ======
 function initSeller() {
-  const nodeId = myNodeId;
-
-  gun.get('bakeries').get(nodeId).put({
-    id: nodeId,
-    name: myBakeryName,
-    owner: myName,
-    phone: myPhone,
-    status: 'open',
-    joinedAt: Date.now(),
-    online: true,
-    role: 'seller'
-  });
-
-  // Listen for orders
+  gun.get('bakeries').get(UID).put({ id: UID, name: bakeryName, owner: name, phone, status: 'open', joinedAt: Date.now(), online: true, role: 'seller' });
   gun.get('orders').map().on((order, orderId) => {
-    if (order && order.bakeryId === nodeId) {
-      orders[orderId] = { ...order, id: orderId };
-      myOrders[orderId] = { ...order, id: orderId };
-      render();
-      if (order.status === 'pending') showToast(`🆕 #${orderId.slice(-5)} yangi buyurtma`);
-    }
+    if (order && order.bakeryId === UID) { orders[orderId] = { ...order, id: orderId }; myOrders[orderId] = { ...order, id: orderId }; render(); if (order.status === 'pending') toast(`🆕 #${orderId.slice(-5)} yangi buyurtma`); }
   });
-
-  showToast(`🏪 ${myBakeryName} P2P tarmoqqa qo'shildi`);
+  toast(`🏪 ${bakeryName} tarmoqqa qo'shildi`);
 }
 
-// ====== CUSTOMER ======
 function initCustomer() {
   gun.get('bakeries').map().on((bakery, id) => {
-    if (bakery && bakery.name) {
-      bakeries[id] = { ...bakery, id };
-      gun.get('bakeries').get(id).get('location').once(loc => {
-        if (loc) bakeries[id].location = loc;
-        render();
-      });
-      render();
-    }
+    if (bakery && bakery.name) { bakeries[id] = { ...bakery, id }; if (bakery.products) bakeries[id].products = bakery.products; render(); }
   });
-
   gun.get('orders').map().on((order, orderId) => {
-    if (order && order.customerId === myNodeId) {
-      orders[orderId] = { ...order, id: orderId };
-      myOrders[orderId] = { ...order, id: orderId };
-      render();
-    }
+    if (order && order.customerId === UID) { orders[orderId] = { ...order, id: orderId }; myOrders[orderId] = { ...order, id: orderId }; render(); }
   });
 }
 
-// ====== DELIVERY ======
-let myVehicle = 'velo';
-function initDelivery(vehicle) {
-  myVehicle = vehicle || 'velo';
-
-  // Publish delivery person info
-  gun.get('delivery').get(myNodeId).put({
-    id: myNodeId,
-    name: myName,
-    phone: myPhone,
-    vehicle: myVehicle,
-    online: true,
-    busy: false
-  });
-
-  // Listen for all orders (to claim ready ones)
+function initDelivery() {
+  gun.get('delivery').get(UID).put({ id: UID, name, phone, vehicle, online: true, busy: false });
   gun.get('orders').map().on((order, orderId) => {
     if (order) {
-      // Store orders that need delivery (ready status) or assigned to me
-      if (order.deliveryId === myNodeId || order.status === 'ready' || order.status === 'delivering') {
-        myOrders[orderId] = { ...order, id: orderId };
-        orders[orderId] = { ...order, id: orderId };
-        render();
-      }
+      if (order.deliveryId === UID || order.status === 'ready' || order.status === 'delivering') { myOrders[orderId] = { ...order, id: orderId }; orders[orderId] = { ...order, id: orderId }; render(); }
     }
   });
-
-  showToast(`🚚 ${myName} yetkazish tarmog'iga qo'shildi`);
+  toast(`🚚 ${name} yetkazish tarmog'iga qo'shildi`);
 }
 
-// ====== PRODUCTS ======
-function addProduct() {
-  const name = prompt('Non nomi:');
-  if (!name) return;
-  const price = parseInt(prompt('Narxi (so\'m):'));
-  if (isNaN(price) || price < 500) { showToast('⚠️ Narx noto\'g\'ri'); return; }
-
-  myProducts.push({ id: Date.now(), name, price, desc: '' });
-  gun.get('bakeries').get(myNodeId).get('products').put(myProducts);
-  render();
-  showToast(`✅ ${name} qo'shildi`);
-}
-
-function removeProduct(id) {
-  myProducts = myProducts.filter(p => p.id !== id);
-  gun.get('bakeries').get(myNodeId).get('products').put(myProducts);
-  render();
+function initAdmin() {
+  gun.get('bakeries').map().on((bakery, id) => { if (bakery && bakery.name) { bakeries[id] = { ...bakery, id }; render(); } });
+  gun.get('orders').map().on((order, orderId) => { if (order) { orders[orderId] = { ...order, id: orderId }; render(); } });
+  toast('⚙️ Admin paneliga xush kelibsiz');
 }
 
 // ====== TABS ======
 function initTabs() {
-  let tabs = [];
-  if (myRole === 'seller') tabs = ['📊 Dashboard', '🍞 Nonlarim', '📦 Buyurtmalar', '🗺 Xarita', '⚙️'];
-  else if (myRole === 'customer') tabs = ['🍞 Nonlar', '📍 Nonvoyxona', '📦 Buyurtmalar', '🗺 Xarita', '⚙️'];
-  else tabs = ['📦 Buyurtmalar', '🗺 Xarita', '📍 Mening joyim', '⚙️'];
-
+  const tabs = role === 'seller' ? ['📊', '🍞', '📦', '🗺', '⚙️'] :
+    role === 'customer' ? ['🍞', '📍', '📦', '🗺', '⚙️'] :
+    role === 'delivery' ? ['📦', '🗺', '📍', '⚙️'] :
+    ['📊', '👥', '🗺', '⚙️'];
+  const labels = role === 'seller' ? ['Dashboard', 'Nonlarim', 'Buyurtmalar', 'Xarita', 'Sozlamalar'] :
+    role === 'customer' ? ['Nonlar', 'Nonvoyxona', 'Buyurtmalar', 'Xarita', 'Sozlamalar'] :
+    role === 'delivery' ? ['Buyurtmalar', 'Xarita', 'Mening joyim', 'Sozlamalar'] :
+    ['Monitor', 'Foydalanuvchilar', 'Xarita', 'Sozlamalar'];
   const bar = document.getElementById('tabBar');
-  bar.innerHTML = tabs.map((t,i) =>
-    `<button class="tab-btn ${i===0?'active':''}" onclick="switchTab(${i})">${t}</button>`
-  ).join('');
+  bar.innerHTML = tabs.map((t,i) => `<button class="tab-btn ${i===0?'active':''}" onclick="switchTab(${i})" title="${labels[i]}">${t}</button>`).join('');
 }
 
 function switchTab(idx) {
@@ -694,37 +558,39 @@ function switchTab(idx) {
 
 // ====== RENDER ======
 function render() {
-  if (!myRole) return showLogin();
+  if (!role) return showLogin();
   const app = document.getElementById('app');
-
-  if (myRole === 'seller') {
+  app.innerHTML = '';
+  if (role === 'seller') {
     if (currentTab === 0) app.innerHTML = sellerDashboard();
     else if (currentTab === 1) app.innerHTML = sellerProducts();
     else if (currentTab === 2) app.innerHTML = sellerOrders();
-    else if (currentTab === 3) app.innerHTML = mapView('seller');
+    else if (currentTab === 3) app.innerHTML = mapView();
     else if (currentTab === 4) app.innerHTML = settingsView();
-  } else if (myRole === 'customer') {
+  } else if (role === 'customer') {
     if (currentTab === 0) app.innerHTML = customerProducts();
     else if (currentTab === 1) app.innerHTML = customerBakeries();
     else if (currentTab === 2) app.innerHTML = customerOrders();
-    else if (currentTab === 3) app.innerHTML = mapView('customer');
+    else if (currentTab === 3) app.innerHTML = mapView();
     else if (currentTab === 4) app.innerHTML = settingsView();
-  } else {
+  } else if (role === 'delivery') {
     if (currentTab === 0) app.innerHTML = deliveryOrders();
-    else if (currentTab === 1) app.innerHTML = mapView('delivery');
+    else if (currentTab === 1) app.innerHTML = mapView();
     else if (currentTab === 2) app.innerHTML = deliveryMyLocation();
     else if (currentTab === 3) app.innerHTML = settingsView();
+  } else {
+    if (currentTab === 0) app.innerHTML = adminMonitor();
+    else if (currentTab === 1) app.innerHTML = adminUsers();
+    else if (currentTab === 2) app.innerHTML = mapView();
+    else if (currentTab === 3) app.innerHTML = settingsView();
   }
-
-  // Ensure GPS bar exists
-  if (!document.getElementById('gpsBar') && myRole) {
-    const firstCard = app.querySelector('.card, .empty-state');
-    if (firstCard) {
-      const bar = document.createElement('div');
-      bar.id = 'gpsBar';
-      bar.className = 'gps-bar off';
-      bar.innerHTML = `<span class="pulse"></span><span>📍 GPS faol emas</span>`;
-      firstCard.parentNode.insertBefore(bar, firstCard);
+  // Inject GPS bar
+  if (!document.getElementById('gpsBar') && role) {
+    const firstEl = app.querySelector('.section-title, .card, .stats-grid');
+    if (firstEl) {
+      const bar = document.createElement('div'); bar.id = 'gpsBar'; bar.className = 'gps-bar off';
+      bar.innerHTML = '<span class="pulse"></span><span>📍 GPS faol emas</span>';
+      firstEl.parentNode.insertBefore(bar, firstEl);
       renderGpsBar();
     }
   }
@@ -732,125 +598,91 @@ function render() {
 
 // ====== SELLER VIEWS ======
 function sellerDashboard() {
-  const activeOrders = Object.values(myOrders).filter(o => o.status !== 'delivered' && o.status !== 'rejected');
-  const revenue = Object.values(myOrders).reduce((s,o) => s + (o.total || 0), 0);
-  const totalOrders = Object.keys(myOrders).length;
-
+  const active = Object.values(myOrders).filter(o => o.status !== 'delivered' && o.status !== 'rejected');
+  const revenue = Object.values(myOrders).reduce((s,o) => s + (o.total||0), 0);
   const customers = Object.values(liveLocations).filter(l => l.role === 'customer' && l.online);
   const deliveryFolks = Object.values(liveLocations).filter(l => l.role === 'delivery' && l.online);
-
   return `
-    <div class="section-title">📊 ${myBakeryName}</div>
-    <div class="section-sub">P2P · ${Object.keys(bakeries).length + 1} nonvoy · ${customers.length} xaridor · ${deliveryFolks.length} yetkazuvchi</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px">
-      <div class="card" style="text-align:center;padding:12px">
-        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">${totalOrders}</div>
-        <div style="font-size:0.6rem;color:var(--text-dim)">Jami buyurtma</div>
-      </div>
-      <div class="card" style="text-align:center;padding:12px">
-        <div style="font-size:1.1rem;font-weight:700;color:var(--gold)">${revenue.toLocaleString()}</div>
-        <div style="font-size:0.6rem;color:var(--text-dim)">Daromad (so'm)</div>
-      </div>
-      <div class="card" style="text-align:center;padding:12px">
-        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">${activeOrders.length}</div>
-        <div style="font-size:0.6rem;color:var(--text-dim)">Faol buyurtma</div>
-      </div>
-      <div class="card" style="text-align:center;padding:12px">
-        <div style="font-size:1.1rem;font-weight:700;color:${customers.length > 0 ? 'var(--blue)' : 'var(--text-dim)'}">${customers.length}</div>
-        <div style="font-size:0.6rem;color:var(--text-dim)">Xaridor</div>
-      </div>
+    <div class="section-title">📊 ${bakeryName || 'Nonvoyxona'}</div>
+    <div class="section-sub">🏪 ${Object.keys(bakeries).length+1} nonvoy · 🛒 ${customers.length} xaridor · 🚚 ${deliveryFolks.length} yetkazuvchi</div>
+    <div class="stats-grid">
+      ${[
+        {num:Object.keys(myOrders).length,lbl:'Jami buyurtma'},
+        {num:revenue.toLocaleString(),lbl:'Daromad (so\'m)'},
+        {num:active.length,lbl:'Faol buyurtma'},
+        {num:customers.length,lbl:'Xaridor online'},
+      ].map(s => `<div class="stat-card"><div class="stat-num">${s.num}</div><div class="stat-label">${s.lbl}</div></div>`).join('')}
     </div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:0.68rem;color:var(--text-dim)">
-      <span class="role-badge role-seller">🏪 ${myBakeryName}</span>
-      <span class="role-badge role-customer">🛒 ${customers.length} xaridor</span>
-      <span class="role-badge role-delivery">🚚 ${deliveryFolks.length} yetkazuvchi</span>
-      ${myLat && myLng ? `<span class="dist-badge">📍 ${myLat.toFixed(4)}, ${myLng.toFixed(4)}</span>` : ''}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;font-size:0.68rem">
+      <span class="status-badge status-baking">🏪 ${bakeryName}</span>
+      <span class="status-badge status-accepted">🛒 ${customers.length} xaridor</span>
+      <span class="status-badge status-delivering">🚚 ${deliveryFolks.length} yetkazuvchi</span>
+      ${myLat&&myLng?`<span style="color:var(--text-dim);padding:2px 8px">📍 ${myLat.toFixed(4)}, ${myLng.toFixed(4)}</span>`:''}
     </div>
-
-    <div style="margin-bottom:10px;font-size:0.7rem;color:var(--text-dim);display:flex;gap:6px;flex-wrap:wrap">
-      ${customers.slice(0,5).map(c => `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${c.id}','🛒 ${c.name.replace(/'/g,"\\'")}')">💬 ${c.name}</button>`).join('')}
-      ${deliveryFolks.slice(0,3).map(d => `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${d.id}','🚚 ${d.name.replace(/'/g,"\\'")}')">💬 ${d.name}</button>`).join('')}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      ${customers.slice(0,5).map(c => `<button class="btn btn-sm btn-ghost" style="padding:2px 10px;font-size:0.6rem" onclick="openChat('${c.id}','🛒 ${escJs(c.name)}')">💬 ${c.name}</button>`).join('')}
+      ${deliveryFolks.slice(0,3).map(d => `<button class="btn btn-sm btn-ghost" style="padding:2px 10px;font-size:0.6rem" onclick="openChat('${d.id}','🚚 ${escJs(d.name)}')">💬 ${d.name}</button>`).join('')}
     </div>
-    <div style="font-size:0.82rem;color:var(--text-bright);margin-bottom:10px">🟢 Jonli buyurtmalar</div>
-    ${activeOrders.length === 0
-      ? emptyState('⏳', 'Hali buyurtma yo\'q', 'Xaridorlar buyurtma berganda shu yerda ko\'rinadi')
-      : activeOrders.map(o => orderCard(o, true)).join('')}
+    <div style="font-size:0.85rem;color:var(--text-bright);margin-bottom:10px;font-weight:600">🟢 Jonli buyurtmalar</div>
+    ${active.length === 0 ? emptyState('⏳', 'Hali buyurtma yo\'q', 'Xaridorlar buyurtma berganda shu yerda ko\'rinadi') : active.map(o => orderCard(o, true)).join('')}
   `;
 }
 
 function sellerProducts() {
   return `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div>
-        <div class="section-title">🍞 Nonlarim</div>
-        <div class="section-sub">${myProducts.length} ta non</div>
-      </div>
-      <button class="btn btn-primary btn-sm" onclick="addProduct()">+ Non qo'shish</button>
+      <div><div class="section-title">🍞 Nonlarim</div><div class="section-sub">${(bakeries[UID]?.products||[]).length} ta non</div></div>
+      <button class="btn btn-primary btn-sm" onclick="addProduct()">+ Non qo\'shish</button>
     </div>
-    ${myProducts.length === 0
-      ? emptyState('🍞', 'Non qo\'shilmagan', '"Non qo\'shish" tugmasini bosing')
-      : `<div class="grid-3">${myProducts.map(p => `
+    ${!bakeries[UID]?.products?.length ? emptyState('🍞', 'Non qo\'shilmagan', '"Non qo\'shish" tugmasini bosing') : `
+      <div class="grid-3">${bakeries[UID].products.map(p => `
         <div class="card" style="padding:12px;position:relative">
-          <button onclick="removeProduct(${p.id})" style="position:absolute;top:6px;right:6px;background:none;border:none;color:#ff6b6b;font-size:0.9rem;cursor:pointer">✕</button>
+          <button onclick="removeProduct(${p.id})" style="position:absolute;top:6px;right:6px;background:none;border:none;color:var(--red);font-size:0.9rem;cursor:pointer;transition:var(--transition)">✕</button>
           <div style="width:100%;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:2.5rem">🍞</div>
           <div class="prod-name">${p.name}</div>
           <div class="prod-price">${p.price.toLocaleString()} <sub>so'm</sub></div>
-        </div>
-      `).join('')}</div>`
-    }
+        </div>`).join('')}</div>`}
   `;
 }
 
 function sellerOrders() {
-  const allOrders = Object.values(myOrders);
+  const all = Object.values(myOrders);
   return `
     <div class="section-title">📦 Barcha buyurtmalar</div>
-    <div class="section-sub">${allOrders.length} ta buyurtma</div>
-    ${allOrders.length === 0
-      ? emptyState('📦', 'Buyurtmalar yo\'q', 'Yangi buyurtma kelganda shu yerda ko\'rinadi')
-      : allOrders.reverse().map(o => orderCard(o, false)).join('')}
+    <div class="section-sub">${all.length} ta buyurtma</div>
+    ${all.length === 0 ? emptyState('📦', 'Buyurtmalar yo\'q', 'Yangi buyurtma kelganda shu yerda ko\'rinadi') : all.reverse().map(o => orderCard(o, false)).join('')}
   `;
 }
 
 function orderCard(o, showActions) {
-  const customerLoc = liveLocations[o.customerId];
-  const deliveryLoc = liveLocations[o.deliveryId];
-  let locHtml = '';
-  if (o.customerLat && o.customerLng) {
-    locHtml += `<span class="dist-badge">🛒 ${o.customerLat.toFixed(4)}, ${o.customerLng.toFixed(4)}</span> `;
-  }
-  if (deliveryLoc) {
-    locHtml += `<span class="dist-badge">🚚 ${deliveryLoc.lat?.toFixed(4)}, ${deliveryLoc.lng?.toFixed(4)}</span>`;
-  }
-
-  const actionsHtml = {
-    pending: `<button class="btn btn-success btn-sm" onclick="updateOrder('${o.id}','accepted')">✅ Qabul qilish</button>
-              <button class="btn btn-danger btn-sm" onclick="updateOrder('${o.id}','rejected')">❌ Rad etish</button>`,
+  const items = (o.items||[]).map(i => `${i.name||i.productName} x${i.qty||i.quantity}`).join(', ');
+  const statusMap = { pending:'🟡 Kutilmoqda', accepted:'🔵 Qabul qilindi', baking:'🟠 Tayyorlanmoqda', ready:'✅ Tayyor', delivering:'🟢 Yetkazilmoqda', delivered:'✅ Yetkazildi', rejected:'🔴 Bekor qilindi' };
+  const actions = {
+    pending: `<button class="btn btn-success btn-sm" onclick="updateOrder('${o.id}','accepted')">✅ Qabul qilish</button><button class="btn btn-danger btn-sm" onclick="updateOrder('${o.id}','rejected')">❌ Rad etish</button>`,
     accepted: `<button class="btn btn-primary btn-sm" onclick="updateOrder('${o.id}','baking')">🔥 Tayyorlanmoqda</button>`,
     baking: `<button class="btn btn-primary btn-sm" onclick="updateOrder('${o.id}','ready')">✅ Tayyor</button>`,
     ready: `<span style="font-size:0.7rem;color:var(--gold)">✅ Tayyor · Yetkazuvchi kutilmoqda</span>`,
-    delivering: `<span style="font-size:0.7rem;color:var(--orange)">🚚 Yetkazilmoqda</span>`,
-    delivered: `<span style="font-size:0.7rem;color:var(--green)">✅ Yetkazildi</span>`,
-    rejected: `<span style="font-size:0.7rem;color:#ff6b6b">❌ Bekor qilindi</span>`,
+    delivering: `<span style="font-size:0.72rem;color:var(--green)">🚚 ${o.deliveryName || 'Yetkazilmoqda'}</span>`,
+    delivered: `<span style="font-size:0.72rem;color:var(--green)">✅ Yetkazildi</span>`,
+    rejected: `<span style="font-size:0.72rem;color:var(--red)">❌ Bekor qilindi</span>`,
   };
-
-  const items = (o.items || []).map(i => `${i.name || i.productName} x${i.qty || i.quantity}`).join(', ');
-  const deliveryName = o.deliveryName ? ` · 🚚 ${o.deliveryName}` : '';
-  return `<div class="card" style="margin-bottom:10px;border-left:3px solid ${o.status==='pending'?'var(--gold)':o.status==='delivering'?'var(--orange)':o.status==='delivered'?'var(--green)':'var(--glass-border)'}">
+  const customerLoc = liveLocations[o.customerId];
+  const deliveryLoc = liveLocations[o.deliveryId];
+  return `<div class="card order-card ${o.status}" style="margin-bottom:10px">
     <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-      <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.customerName || 'Xaridor'}</span>
-      <span class="status-badge status-${o.status}">${o.status}</span>
+      <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.customerName||'Xaridor'}</span>
+      <span class="status-badge status-${o.status}">${statusMap[o.status]||o.status}</span>
     </div>
-    <div style="font-size:0.8rem;color:var(--text);margin-bottom:4px">${items || '—'}</div>
+    <div style="font-size:0.8rem;color:var(--text);margin-bottom:4px">${items||'—'}</div>
     <div style="font-size:0.78rem;font-weight:600;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
-    <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:4px">📍 ${o.address || 'Manzil kiritilmagan'} · 📞 ${o.customerPhone || '—'}${deliveryName}</div>
-    <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:6px">${locHtml}</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:4px">📍 ${o.address||'—'} · 📞 ${o.customerPhone||'—'}</div>
+    ${customerLoc?`<div style="font-size:0.62rem;color:var(--blue);margin-bottom:4px">🛒 ${customerLoc.lat?.toFixed(4)}, ${customerLoc.lng?.toFixed(4)}</div>`:''}
+    ${deliveryLoc?`<div style="font-size:0.62rem;color:var(--purple);margin-bottom:4px">🚚 ${deliveryLoc.lat?.toFixed(4)}, ${deliveryLoc.lng?.toFixed(4)}</div>`:''}
     <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">
-      ${o.customerId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="event.stopPropagation();openChat('${o.customerId}','🛒 ${(o.customerName||'Xaridor').replace(/'/g,"\\'")}')">💬 Xaridor</button>` : ''}
-      ${o.deliveryId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="event.stopPropagation();openChat('${o.deliveryId}','🚚 ${(o.deliveryName||'Yetkazuvchi').replace(/'/g,"\\'")}')">💬 Yetkazuvchi</button>` : ''}
+      ${o.customerId?`<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${escJs(o.customerName||'Xaridor')}')">💬 Xaridor</button>`:''}
+      ${o.deliveryId?`<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.deliveryId}','🚚 ${escJs(o.deliveryName||'Yetkazuvchi')}')">💬 Yetkazuvchi</button>`:''}
     </div>
-    ${showActions && actionsHtml[o.status] ? `<div style="display:flex;gap:6px;flex-wrap:wrap">${actionsHtml[o.status]}</div>` : ''}
+    ${showActions && actions[o.status] ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${actions[o.status]}</div>` : ''}
   </div>`;
 }
 
@@ -858,787 +690,531 @@ function updateOrder(orderId, status) {
   const order = orders[orderId] || myOrders[orderId];
   if (!order) return;
   order.status = status;
-
   gun.get('orders').get(orderId).get('status').put(status);
-
   render();
-  const msgs = {
-    accepted: '✅ Buyurtma qabul qilindi',
-    rejected: '❌ Buyurtma rad etildi',
-    baking: '🟠 Tayyorlanmoqda',
-    ready: '✅ Tayyor',
-  };
-  showToast(msgs[status] || status);
+  const msgs = { accepted:'✅ Buyurtma qabul qilindi', rejected:'❌ Rad etildi', baking:'🟠 Tayyorlanmoqda', ready:'✅ Tayyor' };
+  toast(msgs[status]||status);
+}
+
+function addProduct() {
+  const name = prompt('Non nomi:'); if (!name) return;
+  const price = parseInt(prompt('Narxi (so\'m):')); if (isNaN(price)||price<500) { toast('⚠️ Narx noto\'g\'ri'); return; }
+  const prods = bakeries[UID]?.products || [];
+  prods.push({ id: Date.now(), name, price, desc: '' });
+  gun.get('bakeries').get(UID).get('products').put(prods);
+  toast(`✅ ${name} qo'shildi`);
+  render();
+}
+
+function removeProduct(id) {
+  let prods = bakeries[UID]?.products || [];
+  prods = prods.filter(p => p.id !== id);
+  gun.get('bakeries').get(UID).get('products').put(prods);
+  render();
 }
 
 // ====== CUSTOMER VIEWS ======
 function customerProducts() {
-  const bakeryIds = Object.keys(bakeries);
-
-  if (bakeryIds.length === 0) {
-    return emptyState('🔍', 'Tarmoqda nonvoy topilmadi', 'P2P tarmoqqa ulangan nonvoy bo\'lishi kerak');
-  }
-
+  const bakeryIds = Object.keys(bakeries).filter(id => bakeries[id]?.products?.length);
+  if (!bakeryIds.length) return emptyState('🔍', 'Tarmoqda nonvoy topilmadi', 'P2P tarmoqqa ulangan nonvoy bo\'lishi kerak');
   return `
     <div class="section-title">🍞 Nonlar</div>
     <div class="section-sub">P2P tarmoqdagi ${bakeryIds.length} ta nonvoy</div>
     ${bakeryIds.map(bId => {
-      const b = bakeries[bId];
-      const prods = b.products || [];
-      if (!prods.length) return '';
-      const dist = b.location && myLat && myLng ? calcDistance(myLat, myLng, b.location.lat, b.location.lng) : null;
-      return `
-        <div class="card" style="margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div>
-              <div style="font-size:0.9rem;font-weight:600;color:var(--text-bright)">🏪 ${b.name}</div>
-              <div style="font-size:0.65rem;color:var(--text-dim)">${b.owner} · 📞 ${b.phone || '—'} ${dist ? `· 📍 ${dist} km` : ''}</div>
-            </div>
-            <div style="display:flex;gap:4px;align-items:center">
-              <button class="btn btn-sm btn-ghost" style="padding:4px 8px;font-size:0.7rem" onclick="event.stopPropagation();openChat('${bId}','🏪 ${b.name.replace(/'/g,"\\'")}')">💬</button>
-              <span class="role-badge role-seller">🟢 P2P</span>
-            </div>
+      const b = bakeries[bId]; const prods = b.products||[];
+      const dist = b.location && myLat && myLng ? calcDist(myLat, myLng, b.location.lat, b.location.lng) : null;
+      return `<div class="card" style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div style="font-size:0.9rem;font-weight:600;color:var(--text-bright)">🏪 ${b.name}</div>
+            <div style="font-size:0.65rem;color:var(--text-dim)">${b.owner} · 📞 ${b.phone||'—'} ${dist?`· 📍 ${dist} km`:''}</div>
           </div>
-          <div class="grid-3">
-            ${prods.map(p => `
-              <div style="cursor:pointer" onclick="addToCart('${bId}','${b.name}',${p.id},'${p.name.replace(/'/g,"\\'")}',${p.price})">
-                <div style="width:100%;aspect-ratio:1;border-radius:8px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:2rem">🍞</div>
-                <div class="prod-name">${p.name}</div>
-                <div class="prod-price">${p.price.toLocaleString()} <sub>so'm</sub></div>
-              </div>
-            `).join('')}
-          </div>
+          <button class="btn btn-sm btn-ghost" onclick="openChat('${bId}','🏪 ${escJs(b.name)}')" style="font-size:0.7rem">💬</button>
         </div>
-      `;
-    }).filter(Boolean).join('') || emptyState('🍞', 'Nonvoylar mahsulot qo\'shmagan', 'Nonvoylar o\'z mahsulotlarini qo\'shishlari kerak')}
+        <div class="grid-3">${prods.map(p => {
+          const inCart = cart[p.id];
+          return `<div class="prod-card" onclick="addToCart('${bId}','${escJs(b.name)}',${p.id},'${escJs(p.name)}',${p.price})">
+            <div style="aspect-ratio:1;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:2rem">🍞</div>
+            <div style="padding:8px 10px 10px">
+              <div class="prod-name" style="font-size:0.75rem">${p.name}</div>
+              <div class="prod-price" style="font-size:0.85rem">${p.price.toLocaleString()} <sub>so'm</sub></div>
+              ${inCart ? `<div style="font-size:0.6rem;color:var(--green);margin-top:2px">✅ Savatda: ${inCart.qty}</div>` : ''}
+            </div>
+          </div>`;
+        }).join('')}</div>
+      </div>`;
+    }).join('')}
   `;
 }
 
 function customerBakeries() {
   const bakeryIds = Object.keys(bakeries);
-
-  if (bakeryIds.length === 0) {
-    return emptyState('📍', 'Yaqin nonvoyxona topilmadi', 'P2P tarmoqqa ulangan nonvoy bo\'lishi kerak');
-  }
-
+  if (!bakeryIds.length) return emptyState('📍', 'Nonvoyxona topilmadi', 'P2P tarmoqqa ulangan nonvoy bo\'lishi kerak');
   let sorted = bakeryIds.map(id => ({ ...bakeries[id], id }));
   if (myLat && myLng) {
-    sorted.forEach(b => {
-      if (b.location) b.dist = parseFloat(calcDistance(myLat, myLng, b.location.lat, b.location.lng));
-    });
+    sorted.forEach(b => { if (b.location) b.dist = parseFloat(calcDist(myLat, myLng, b.location.lat, b.location.lng)); });
     sorted.sort((a,b) => (a.dist||999) - (b.dist||999));
   }
-
   const deliveryFolks = Object.values(liveLocations).filter(l => l.role === 'delivery' && l.online);
-
   return `
     <div class="section-title">📍 Nonvoyxonalar</div>
     <div class="section-sub">${bakeryIds.length} ta nonvoy · ${deliveryFolks.length} ta yetkazuvchi</div>
     ${sorted.map(b => {
       const loc = b.location;
-      const d = b.dist;
-      return `<div class="card bakery-item" style="margin-bottom:8px">
-        <div class="bakery-icon">🏪</div>
-        <div class="bakery-info">
-          <div class="bakery-name">${b.name}</div>
-          <div class="bakery-detail">${b.owner} · 📞 ${b.phone || '—'}${loc ? ` · 📍 ${loc.lat?.toFixed(4)}, ${loc.lng?.toFixed(4)}` : ''} ${d ? `· 🚶 ${d} km` : ''}</div>
+      return `<div class="card" style="display:flex;align-items:center;gap:12px;margin-bottom:8px;padding:14px">
+        <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a1006,#2a1a0a);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🏪</div>
+        <div style="flex:1">
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text-bright)">${b.name}</div>
+          <div style="font-size:0.65rem;color:var(--text-dim)">${b.owner} · 📞 ${b.phone||'—'}${loc?` · 📍 ${loc.lat?.toFixed(4)}, ${loc.lng?.toFixed(4)}`:''}${b.dist?` · 🚶 ${b.dist} km`:''}</div>
         </div>
-        <div style="display:flex;gap:4px;align-items:center">
-          <button class="btn btn-sm btn-ghost" style="padding:4px 8px;font-size:0.7rem" onclick="event.stopPropagation();openChat('${b.id}','🏪 ${b.name.replace(/'/g,"\\'")}')">💬</button>
-          <span class="role-badge role-seller">🟢</span>
-        </div>
+        <button class="btn btn-sm btn-ghost" onclick="openChat('${b.id}','🏪 ${escJs(b.name)}')" style="font-size:0.7rem">💬</button>
       </div>`;
     }).join('')}
-    ${deliveryFolks.length > 0 ? `
-      <div style="margin-top:16px">
-        <div class="section-title" style="font-size:0.9rem">🚚 Yaqin yetkazuvchilar</div>
-        <div class="section-sub" style="font-size:0.65rem">${deliveryFolks.length} ta</div>
-        ${deliveryFolks.map(d => {
-          const dist = myLat && myLng && d.lat && d.lng ? calcDistance(myLat, myLng, d.lat, d.lng) + ' km' : '';
-          return `<div class="card bakery-item" style="margin-bottom:6px">
-            <div class="bakery-icon" style="background:linear-gradient(135deg,#1a0820,#2a1040)">🚚</div>
-            <div class="bakery-info">
-              <div class="bakery-name">${d.name}</div>
-              <div class="bakery-detail">${dist ? `📍 ${dist}` : ''}</div>
-            </div>
-            <button class="btn btn-sm btn-ghost" style="padding:4px 8px;font-size:0.7rem" onclick="event.stopPropagation();openChat('${d.id}','🚚 ${d.name.replace(/'/g,"\\'")}')">💬</button>
-          </div>`;
-        }).join('')}
-      </div>
+    ${deliveryFolks.length ? `
+      <div class="section-title" style="font-size:0.9rem;margin-top:16px">🚚 Yetkazuvchilar</div>
+      ${deliveryFolks.map(d => {
+        const dist = myLat&&myLng&&d.lat&&d.lng ? calcDist(myLat,myLng,d.lat,d.lng)+' km' : '';
+        return `<div class="card" style="display:flex;align-items:center;gap:12px;margin-bottom:6px;padding:12px 14px">
+          <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#1a0820,#2a1040);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🚚</div>
+          <div style="flex:1"><div style="font-size:0.82rem;color:var(--text-bright)">${d.name}</div><div style="font-size:0.62rem;color:var(--text-dim)">${dist?`📍 ${dist}`:''}</div></div>
+          <button class="btn btn-sm btn-ghost" onclick="openChat('${d.id}','🚚 ${escJs(d.name)}')" style="font-size:0.7rem">💬</button>
+        </div>`;
+      }).join('')}
     ` : ''}
   `;
 }
 
 function customerOrders() {
-  const userOrders = Object.values(myOrders).filter(o => o.customerId === myNodeId);
+  const userOrders = Object.values(myOrders).filter(o => o.customerId === UID);
   return `
     <div class="section-title">📦 Buyurtmalarim</div>
     <div class="section-sub">${userOrders.length} ta buyurtma</div>
-    ${userOrders.length === 0
-      ? emptyState('📦', 'Buyurtmalar yo\'q', 'Nonlardan tanlab buyurtma bering')
-      : userOrders.reverse().map(o => {
-          const deliveryLoc = liveLocations[o.deliveryId];
-          return `
-            <div class="card" style="margin-bottom:8px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-                <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.bakeryName || 'Nonvoy'}</span>
-                <span class="status-badge status-${o.status}">${o.status}</span>
-              </div>
-              <div style="font-size:0.78rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name || i.productName} x${i.qty || i.quantity}`).join(', ')}</div>
-              <div style="font-size:0.72rem;font-weight:600;color:var(--gold)">${(o.total||0).toLocaleString()} so'm</div>
-              <div style="font-size:0.62rem;color:var(--text-dim)">📍 ${o.address || '—'}</div>
-              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
-                ${o.bakeryId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${(o.bakeryName||'Nonvoy').replace(/'/g,"\\'")}')">💬 Nonvoy</button>` : ''}
-                ${o.deliveryId ? `<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.deliveryId}','🚚 ${(o.deliveryName||'Yetkazuvchi').replace(/'/g,"\\'")}')">💬 Yetkazuvchi</button>` : ''}
-              </div>
-              ${o.deliveryName ? `<div style="font-size:0.62rem;color:var(--purple)">🚚 ${o.deliveryName} ${deliveryLoc ? `· 📍 ${deliveryLoc.lat?.toFixed(4)}, ${deliveryLoc.lng?.toFixed(4)}` : ''}</div>` : ''}
-              ${o.status === 'delivering' && o.deliveryId ? `
-                <button class="btn btn-sm btn-ghost" style="margin-top:6px;font-size:0.6rem" onclick="switchTab(3)">🗺 Yetkazuvchini xaritada ko'rish</button>
-              ` : ''}
-            </div>
-          `;
-        }).join('')}
+    ${userOrders.length === 0 ? emptyState('📦', 'Buyurtmalar yo\'q', 'Nonlardan tanlab buyurtma bering') : userOrders.reverse().map(o => {
+      const statusMap = { pending:'🟡 Kutilyapti', accepted:'🔵 Qabul qilindi', baking:'🟠 Tayyorlanmoqda', ready:'✅ Tayyor', delivering:'🟢 Yetkazilmoqda', delivered:'✅ Yetkazildi', rejected:'🔴 Bekor qilindi' };
+      return `<div class="card" style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.bakeryName||'Nonvoy'}</span>
+          <span class="status-badge status-${o.status}">${statusMap[o.status]||o.status}</span>
+        </div>
+        <div style="font-size:0.78rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name||i.productName} x${i.qty||i.quantity}`).join(', ')}</div>
+        <div style="font-size:0.72rem;font-weight:600;color:var(--gold)">${(o.total||0).toLocaleString()} so'm</div>
+        <div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:4px">📍 ${o.address||'—'}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          ${o.bakeryId?`<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${escJs(o.bakeryName||'Nonvoy')}')">💬 Nonvoy</button>`:''}
+          ${o.deliveryId?`<button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.deliveryId}','🚚 ${escJs(o.deliveryName||'Yetkazuvchi')}')">💬 Yetkazuvchi</button>`:''}
+        </div>
+        ${o.status === 'delivering' && o.deliveryId ? `<div style="font-size:0.62rem;color:var(--green);margin-top:4px">🚚 ${o.deliveryName} yetkazmoqda</div>` : ''}
+      </div>`;
+    }).join('')}
   `;
 }
 
 // ====== CART ======
 function addToCart(bakeryId, bakeryName, productId, productName, price) {
-  if (!bakeryId) { showToast('⚠️ Nonvoy tanlanmagan'); return; }
   selectedBakeryId = bakeryId;
-  const key = productId;
-  if (cart[key]) cart[key].qty++;
-  else cart[key] = { id: productId, name: productName, price, qty: 1, bakeryId, bakeryName };
+  if (cart[productId]) cart[productId].qty++;
+  else cart[productId] = { id: productId, name: productName, price, qty: 1, bakeryId, bakeryName };
   updateCartFab();
-  showToast(`✅ ${productName} savatga qo'shildi`);
+  toast(`✅ ${productName} savatga qo'shildi`);
 }
 
 function updateCartFab() {
   const count = Object.values(cart).reduce((s,i) => s + i.qty, 0);
-  const existing = document.getElementById('cartFab');
-  if (existing) existing.querySelector('.badge').textContent = count;
+  const fab = document.getElementById('cartFab');
+  if (fab) {
+    const b = fab.querySelector('.badge');
+    if (b) b.textContent = count;
+    if (count === 0) fab.remove();
+  }
 }
 
 function showCart() {
   const items = Object.values(cart);
-  if (!items.length) { showToast('⚠️ Savat bo\'sh'); return; }
+  if (!items.length) { toast('⚠️ Savat bo\'sh'); return; }
   const total = items.reduce((s,i) => s + i.price * i.qty, 0);
-  const bakeryName = items[0]?.bakeryName || 'Nonvoy';
-
-  const modal = document.getElementById('modalContent');
-  modal.innerHTML = `
-    <button class="btn btn-ghost btn-sm" style="float:right" onclick="closeModal()">✕</button>
-    <h2 style="font-size:1.1rem;color:var(--text-bright);margin-bottom:14px">🛒 Savat · ${bakeryName}</h2>
-    ${items.map(i => `
-      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:var(--text);padding:6px 0;border-bottom:1px solid var(--glass-border)">
-        <span>${i.name} x${i.qty}</span>
-        <span style="color:var(--gold);font-weight:600">${(i.price * i.qty).toLocaleString()} so'm</span>
-      </div>
-    `).join('')}
-    <div style="display:flex;justify-content:space-between;font-size:0.9rem;font-weight:700;color:var(--gold);padding:10px 0;margin-top:4px">
+  showModal(`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font-size:1.1rem;font-weight:600;color:var(--text-bright)">🛒 Savat</span>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+    </div>
+    ${items.map(i => `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--glass-border);font-size:0.82rem">
+      <span>${i.name} <span style="color:var(--text-dim);font-size:0.7rem">x${i.qty}</span></span>
+      <span style="color:var(--gold);font-weight:600">${(i.price*i.qty).toLocaleString()} so'm</span>
+    </div>`).join('')}
+    <div style="display:flex;justify-content:space-between;font-size:0.9rem;font-weight:700;color:var(--gold);padding:10px 0">
       <span>Jami</span><span>${total.toLocaleString()} so'm</span>
     </div>
-    <label style="margin-top:12px">Yetkazib berish manzili</label>
+    <label style="margin-top:8px">Yetkazish manzili</label>
     <textarea id="orderAddress" rows="2" style="margin-top:4px;min-height:50px" placeholder="Manzilni kiriting"></textarea>
-    <p style="font-size:0.6rem;color:var(--text-dim);margin-top:6px">📍 Sizning joylashuvingiz avtomatik yuboriladi</p>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" onclick="placeOrder()">📡 Buyurtmani P2P yuborish</button>
-  `;
-  document.getElementById('modalOverlay').classList.add('active');
-}
-
-function placeOrder() {
-  const address = document.getElementById('orderAddress').value.trim();
-  if (!address) { showToast('⚠️ Manzilni kiriting'); return; }
-
-  const items = Object.values(cart);
-  const total = items.reduce((s,i) => s + i.price * i.qty, 0);
-  const orderId = 'ord_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
-
-  const order = {
-    id: orderId,
-    bakeryId: selectedBakeryId || items[0]?.bakeryId || 'unknown',
-    bakeryName: items[0]?.bakeryName || 'Nonvoy',
-    customerId: myNodeId,
-    customerName: myName,
-    customerPhone: myPhone,
-    customerLat: myLat,
-    customerLng: myLng,
-    items: items.map(i => ({ productId: i.id, name: i.name, qty: i.qty, price: i.price })),
-    total,
-    address,
-    status: 'pending',
-    createdAt: Date.now(),
-  };
-
-  // ---- SHOW CONFIRMATION INSIDE CART MODAL ----
-  const modal = document.getElementById('modalContent');
-  modal.innerHTML = `
-    <h2 style="font-size:1.1rem;color:var(--text-bright);margin-bottom:14px">✅ Buyurtmani tasdiqlang</h2>
-    <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:12px">
-      <div style="margin-bottom:8px">
-        <span style="color:var(--text-bright)">🏪 ${order.bakeryName}</span>
-      </div>
-      ${items.map(i => `
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--glass-border)">
-          <span>${i.name} x${i.qty}</span>
-          <span style="color:var(--gold)">${(i.price * i.qty).toLocaleString()} so'm</span>
-        </div>
-      `).join('')}
-      <div style="display:flex;justify-content:space-between;font-weight:700;color:var(--gold);padding:8px 0">
-        <span>Jami</span><span>${total.toLocaleString()} so'm</span>
-      </div>
-      <div style="font-size:0.72rem;margin-top:8px">
-        <div>📍 Yetkazish: ${address}</div>
-        <div>📞 ${myPhone}</div>
-        ${myLat && myLng ? `<div>📍 GPS: ${myLat.toFixed(5)}, ${myLng.toFixed(5)}</div>` : ''}
-      </div>
-    </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="showCart()">❌ Bekor qilish</button>
-      <button class="btn btn-success" style="flex:1;justify-content:center" onclick="confirmOrder()">✅ Tasdiqlash</button>
-    </div>
-  `;
-
-  window._pendingOrder = order;
-  window._pendingItems = items;
-  window._pendingOrderId = orderId;
+    <div style="font-size:0.62rem;color:var(--text-dim);margin-top:4px">📍 GPS joylashuv avtomatik yuboriladi</div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="confirmOrder()">📦 Buyurtma berish</button>
+  `);
 }
 
 function confirmOrder() {
-  const order = window._pendingOrder;
-  const orderId = window._pendingOrderId;
-  if (!order) return;
-
+  const address = document.getElementById('orderAddress')?.value?.trim();
+  if (!address) { toast('⚠️ Manzilni kiriting'); return; }
+  const items = Object.values(cart);
+  const total = items.reduce((s,i) => s + i.price * i.qty, 0);
+  const orderId = 'ord_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+  const order = {
+    id: orderId, bakeryId: selectedBakeryId||items[0]?.bakeryId||'unknown',
+    bakeryName: items[0]?.bakeryName||'Nonvoy', customerId: UID, customerName: name,
+    customerPhone: phone, customerLat: myLat, customerLng: myLng,
+    items: items.map(i => ({ productId: i.id, name: i.name, qty: i.qty, price: i.price })),
+    total, address, status: 'pending', createdAt: Date.now(),
+  };
   gun.get('orders').get(orderId).put(order);
-
-  if (order.bakeryId) {
-    gun.get('bakeries').get(order.bakeryId).get('orders').get(orderId).put(order);
-  }
-
+  if (order.bakeryId) gun.get('bakeries').get(order.bakeryId).get('orders').get(orderId).put(order);
   myOrders[orderId] = { ...order, id: orderId };
   orders[orderId] = { ...order, id: orderId };
-
-  cart = {};
-  selectedBakeryId = null;
-  updateCartFab();
-  document.getElementById('cartFab')?.remove();
-
-  if (myRole === 'seller') {
-    orders[orderId] = { ...order, id: orderId };
-    myOrders[orderId] = { ...order, id: orderId };
-  }
-
-  // Show success in same modal
-  const modal = document.getElementById('modalContent');
-  modal.innerHTML = `
-    <div style="text-align:center;padding:20px 0">
-      <div style="font-size:3rem;margin-bottom:12px">✅</div>
-      <h2 style="font-size:1.2rem;color:var(--text-bright);margin-bottom:6px">Buyurtma yuborildi!</h2>
-      <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:4px">#${orderId.slice(-8)}</p>
-      <p style="font-size:0.7rem;color:var(--green);margin-bottom:20px">📍 ${order.address}</p>
-      <div style="display:flex;gap:10px;flex-direction:column">
-        <button class="btn btn-primary" style="justify-content:center" onclick="closeModal(); switchTab(2); render()">📦 Buyurtmalarim</button>
-        <button class="btn btn-ghost" style="justify-content:center" onclick="closeModal()">⬅ Davom etish</button>
-      </div>
-    </div>
-  `;
-
-  window._pendingOrder = null;
-  window._pendingItems = null;
-  window._pendingOrderId = null;
+  cart = {}; selectedBakeryId = null; updateCartFab();
+  closeModal();
+  toast('🎉 Buyurtma qabul qilindi!');
+  render();
 }
 
 // ====== DELIVERY VIEWS ======
 function deliveryOrders() {
   const available = Object.values(orders).filter(o => o.status === 'ready');
-  const myDeliveries = Object.values(myOrders).filter(o => o.deliveryId === myNodeId && o.status !== 'delivered');
-
+  const myDeliveries = Object.values(myOrders).filter(o => o.deliveryId === UID && o.status !== 'delivered');
   return `
     <div class="section-title">🚚 Yetkazish</div>
     <div class="section-sub">${myDeliveries.length} ta faol · ${available.length} ta mavjud</div>
-
     ${available.length > 0 ? `
-      <div style="margin-bottom:12px">
-        <div style="font-size:0.82rem;color:var(--text-bright);margin-bottom:8px">🟢 Tayyor buyurtmalar (olish mumkin)</div>
-        ${available.map(o => `
-          <div class="card" style="margin-bottom:8px;border-color:var(--green)">
-            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-              <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.bakeryName} → ${o.customerName}</span>
-              <span class="status-badge status-ready">tayyor</span>
-            </div>
-            <div style="font-size:0.72rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name} x${i.qty}`).join(', ')}</div>
-            <div style="font-size:0.7rem;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
-            <div style="font-size:0.6rem;color:var(--text-dim);margin-bottom:8px">📍 ${o.address || '—'}</div>
-            <div style="display:flex;gap:4px;flex-wrap:wrap">
-              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${(o.bakeryName||'Nonvoy').replace(/'/g,"\\'")}')">💬 Nonvoy</button>
-              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${(o.customerName||'Xaridor').replace(/'/g,"\\'")}')">💬 Xaridor</button>
-              <button class="btn btn-success btn-sm" onclick="claimDelivery('${o.id}')">🚚 Olish</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    ` : ''}
-
-    <div style="font-size:0.82rem;color:var(--text-bright);margin-bottom:8px">📦 Mening yetkazishlarim</div>
-    ${myDeliveries.length === 0
-      ? emptyState('🚚', 'Faol yetkazish yo\'q', 'Tayyor buyurtmalarni oling')
-      : myDeliveries.map(o => `
-        <div class="card" style="margin-bottom:8px">
+      <div style="margin-bottom:14px">
+        <div style="font-size:0.85rem;color:var(--text-bright);margin-bottom:8px;font-weight:600">🟢 Olish mumkin</div>
+        ${available.map(o => `<div class="card" style="margin-bottom:8px;border-color:var(--green)">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px">
             <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.bakeryName} → ${o.customerName}</span>
-            <span class="status-badge status-${o.status}">${o.status}</span>
+            <span class="status-badge status-ready">tayyor</span>
           </div>
-          <div style="font-size:0.72rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name} x${i.qty}`).join(', ')}</div>
-          <div style="font-size:0.7rem;color:var(--gold)">${(o.total||0).toLocaleString()} so'm</div>
-          <div style="font-size:0.6rem;color:var(--text-dim);margin-bottom:6px">📍 ${o.address || '—'} · 📞 ${o.customerPhone || '—'}</div>
-            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
-              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${(o.bakeryName||'Nonvoy').replace(/'/g,"\\'")}')">💬 Nonvoy</button>
-              <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${(o.customerName||'Xaridor').replace(/'/g,"\\'")}')">💬 Xaridor</button>
-            </div>
-          ${o.status === 'delivering' ? `
-            <div style="display:flex;gap:6px">
-              <button class="btn btn-success btn-sm" onclick="updateOrder('${o.id}','delivered')">✅ Yetkazildi</button>
-              <button class="btn btn-sm btn-ghost" onclick="switchTab(1)">🗺 Xarita</button>
-            </div>
-          ` : ''}
+          <div style="font-size:0.75rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name||i.productName} x${i.qty||i.quantity}`).join(', ')}</div>
+          <div style="font-size:0.72rem;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
+          <div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:8px">📍 ${o.address||'—'}</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${escJs(o.bakeryName||'Nonvoy')}')">💬</button>
+            <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${escJs(o.customerName||'Xaridor')}')">💬</button>
+            <button class="btn btn-success btn-sm" onclick="claimDelivery('${o.id}')">🚚 Olish</button>
+          </div>
+        </div>`).join('')}
+      </div>
+    ` : ''}
+    <div style="font-size:0.85rem;color:var(--text-bright);margin-bottom:8px;font-weight:600">📦 Mening yetkazishlarim</div>
+    ${myDeliveries.length === 0 ? emptyState('🚚', 'Faol yetkazish yo\'q', 'Tayyor buyurtmalarni oling') : myDeliveries.map(o => `
+      <div class="card" style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:0.65rem;color:var(--text-dim)">#${o.id.slice(-5)} · ${o.bakeryName} → ${o.customerName}</span>
+          <span class="status-badge status-${o.status}">${o.status}</span>
         </div>
-      `).join('')}
+        <div style="font-size:0.75rem;color:var(--text);margin-bottom:4px">${(o.items||[]).map(i => `${i.name||i.productName} x${i.qty||i.quantity}`).join(', ')}</div>
+        <div style="font-size:0.7rem;color:var(--gold);margin-bottom:4px">${(o.total||0).toLocaleString()} so'm</div>
+        <div style="font-size:0.6rem;color:var(--text-dim);margin-bottom:6px">📍 ${o.address||'—'} · 📞 ${o.customerPhone||'—'}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.bakeryId}','🏪 ${escJs(o.bakeryName||'Nonvoy')}')">💬</button>
+          <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:0.6rem" onclick="openChat('${o.customerId}','🛒 ${escJs(o.customerName||'Xaridor')}')">💬</button>
+          ${o.status === 'delivering' ? `<button class="btn btn-success btn-sm" onclick="updateOrderDelivery('${o.id}','delivered')">✅ Yetkazildi</button>` : ''}
+        </div>
+      </div>
+    `).join('')}
   `;
 }
 
 function claimDelivery(orderId) {
-  const order = orders[orderId];
-  if (!order) return;
-
-  order.status = 'delivering';
-  order.deliveryId = myNodeId;
-  order.deliveryName = myName;
-  order.deliveryPhone = myPhone;
-
+  const order = orders[orderId]; if (!order) return;
+  order.status = 'delivering'; order.deliveryId = UID; order.deliveryName = name; order.deliveryPhone = phone;
   gun.get('orders').get(orderId).put(order);
   myOrders[orderId] = { ...order, id: orderId };
+  toast(`🚚 #${orderId.slice(-6)} buyurtma olindi`); render();
+}
 
-  showToast(`🚚 #${orderId.slice(-6)} buyurtma olindi`);
-  render();
+function updateOrderDelivery(orderId, status) {
+  updateOrder(orderId, status);
 }
 
 function deliveryMyLocation() {
   return `
-    <div class="section-title">📍 Mening joylashuvim</div>
+    <div class="section-title">📍 Mening joyim</div>
     <div class="section-sub">GPS ma'lumotlari real-time P2P tarmoqqa yuboriladi</div>
-    <div class="card">
-      <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center">
-        <span class="role-badge role-delivery">🚚 Yetkazib beruvchi</span>
-        <span style="font-size:0.75rem;color:var(--text-bright)">${myName}</span>
-        <span style="font-size:0.65rem;color:var(--text-dim)">${myVehicle}</span>
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <span class="status-badge status-delivering">🚚 Yetkazib beruvchi</span>
+        <span style="color:var(--text-bright);font-size:0.85rem">${name}</span>
+        <span style="color:var(--text-dim);font-size:0.7rem">${vehicle}</span>
       </div>
-      <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:4px">
-        ${myLat && myLng ? `
-          <div style="margin-bottom:8px">
-            <div>Kenglik: <span class="coords-text">${myLat.toFixed(6)}</span></div>
-            <div>Uzunlik: <span class="coords-text">${myLng.toFixed(6)}</span></div>
-            <div style="margin-top:8px">
-              <a href="https://www.openstreetmap.org/?mlat=${myLat}&mlon=${myLng}&zoom=15" target="_blank" style="color:var(--gold);font-size:0.7rem">🌐 Ochiq xaritada ko'rish</a>
-            </div>
-          </div>
-        ` : '<span>📍 GPS maʼlumot olinmoqda...</span>'}
-      </div>
-      <button class="btn ${gpsActive ? 'btn-danger' : 'btn-primary'} btn-sm" onclick="${gpsActive ? 'stopGps()' : 'startGps()'}" style="margin-top:8px">
-        ${gpsActive ? '⏹ GPS to\'xtatish' : '▶ GPS yoqish'}
-      </button>
+      ${myLat&&myLng ? `
+        <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:8px">
+          <div>Kenglik: <span class="coords-text" style="font-family:monospace">${myLat.toFixed(6)}</span></div>
+          <div>Uzunlik: <span class="coords-text" style="font-family:monospace">${myLng.toFixed(6)}</span></div>
+          <div style="margin-top:6px"><a href="https://www.openstreetmap.org/?mlat=${myLat}&mlon=${myLng}&zoom=15" target="_blank" style="color:var(--gold);font-size:0.7rem">🌐 Ochiq xaritada ko'rish</a></div>
+        </div>
+      ` : '<div style="color:var(--text-dim);font-size:0.78rem">📍 GPS ma\'lumot olinmoqda...</div>'}
+      <button class="btn ${gpsActive?'btn-danger':'btn-primary'} btn-sm" onclick="${gpsActive?'stopGps()':'startGps()'}" style="margin-top:6px">${gpsActive?'⏹ GPS to\'xtatish':'▶ GPS yoqish'}</button>
     </div>
-    <div style="margin-top:12px">
-      <div class="section-title" style="font-size:0.9rem">🗺 Mening marshrutlarim</div>
-      <div id="deliveryMiniMap" style="width:100%;height:250px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border)"></div>
-    </div>
+    <div id="deliveryMiniMap" style="width:100%;height:250px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border)"></div>
   `;
 }
+
+// ====== ADMIN VIEWS ======
+function adminMonitor() {
+  const active = Object.values(orders).filter(o => o.status !== 'delivered' && o.status !== 'rejected');
+  const totalRevenue = Object.values(orders).reduce((s,o) => s + (o.total||0), 0);
+  const users = Object.values(liveLocations);
+  return `
+    <div class="section-title">📊 Admin monitor</div>
+    <div class="section-sub">Platformani boshqarish</div>
+    <div class="stats-grid">
+      ${[
+        {icon:'👥',val:Object.keys(bakeries).length+users.length,lbl:'Foydalanuvchilar'},
+        {icon:'🏪',val:Object.keys(bakeries).length,lbl:'Nonvoyxonalar'},
+        {icon:'🚚',val:users.filter(u=>u.role==='delivery').length,lbl:'Yetkazuvchilar'},
+        {icon:'📦',val:active.length,lbl:'Faol buyurtma'},
+        {icon:'💰',val:totalRevenue.toLocaleString(),lbl:'Jami daromad'},
+        {icon:'📡',val:peerCount,lbl:'Peerlar'},
+      ].map(s => `<div class="stat-card"><div class="stat-num">${s.val}</div><div class="stat-label">${s.lbl}</div></div>`).join('')}
+    </div>
+    <div style="font-size:0.85rem;color:var(--text-bright);margin-bottom:8px;font-weight:600">🟢 Jonli buyurtmalar</div>
+    ${!active.length ? `<div style="color:var(--text-dim);font-size:0.8rem;padding:20px 0">Faol buyurtma yo'q</div>` :
+      active.map(o => `<div class="card" style="margin-bottom:6px;padding:12px">
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem">
+          <span>#${o.id.slice(-5)} · ${o.customerName||'—'} → ${o.bakeryName||'—'}</span>
+          <span class="status-badge status-${o.status}" style="font-size:0.55rem">${o.status}</span>
+        </div>
+        <div style="font-size:0.65rem;color:var(--text-dim)">${(o.items||[]).map(i=>`${i.name||i.productName} x${i.qty||i.quantity}`).join(', ')} · ${(o.total||0).toLocaleString()} so'm</div>
+      </div>`).join('')}
+  `;
+}
+
+function adminUsers() {
+  const users = Object.values(liveLocations);
+  const customerCount = users.filter(u => u.role === 'customer').length;
+  return `
+    <div class="section-title">👥 Foydalanuvchilar</div>
+    <div class="section-sub">${Object.keys(bakeries).length} nonvoy · ${users.filter(u=>u.role==='delivery').length} yetkazuvchi · ${customerCount} xaridor</div>
+    <div style="font-size:0.85rem;color:var(--text-bright);margin-bottom:8px;font-weight:600">🏪 Nonvoyxonalar</div>
+    ${Object.values(bakeries).map(b => `<div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:6px">
+      <div><div style="font-size:0.78rem;color:var(--text-bright)">🏪 ${b.name}</div><div style="font-size:0.62rem;color:var(--text-dim)">${b.owner} · ${b.phone||'—'}</div></div>
+      <span class="status-badge ${b.online?'status-accepted':'status-rejected'}">${b.online?'🟢 Online':'🔴 Offline'}</span>
+    </div>`).join('')}
+    <div style="font-size:0.85rem;color:var(--text-bright);margin:12px 0 8px;font-weight:600">🚚 Yetkazuvchilar</div>
+    ${users.filter(u=>u.role==='delivery').length === 0 ? '<div style="color:var(--text-dim);font-size:0.78rem">Yetkazuvchi yo\'q</div>' :
+      users.filter(u=>u.role==='delivery').map(d => `<div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:6px">
+        <div><div style="font-size:0.78rem;color:var(--text-bright)">🚚 ${d.name}</div><div style="font-size:0.62rem;color:var(--text-dim)">${d.phone||'—'}</div></div>
+        <span style="font-size:0.6rem;color:${d.online?'var(--green)':'var(--red)'}">${d.online?'🟢 Online':'🔴 Offline'}</span>
+      </div>`).join('')}
+    <div style="font-size:0.85rem;color:var(--text-bright);margin:12px 0 8px;font-weight:600">🛒 Xaridorlar</div>
+    <div class="card" style="padding:12px;text-align:center;color:var(--text-dim);font-size:0.78rem">Xaridorlar buyurtma berganda ro'yxatda ko'rinadi</div>
+  `;
+}
+
+// ====== MAP VIEW ======
+function mapView() {
+  setTimeout(() => initMap(), 100);
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div><div class="section-title">🗺 Jonli xarita</div><div class="section-sub">Real-time P2P GPS joylashuvlar</div></div>
+      <button class="btn btn-sm ${gpsActive?'btn-success':'btn-ghost'}" onclick="centerMap()">🎯</button>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:0.68rem">
+      <div class="legend-row"><span class="legend-dot seller"></span> Nonvoy</div>
+      <div class="legend-row"><span class="legend-dot customer"></span> Xaridor</div>
+      <div class="legend-row"><span class="legend-dot delivery"></span> Yetkazuvchi</div>
+      <div class="legend-row"><span class="legend-dot me"></span> Siz</div>
+    </div>
+    <div id="map"></div>
+    <div id="mapPeers" style="margin-top:6px;font-size:0.62rem;color:var(--text-dim)"></div>
+  `;
+}
+
+function initMap() {
+  if (mapInstance) { mapInstance.invalidateSize(); updateMapMarkers(); return; }
+  const container = document.getElementById('map');
+  if (!container || container._leaflet_id) return;
+  const pos = myLat&&myLng ? [myLat, myLng] : [41.2995, 69.2401];
+  mapInstance = L.map('map', { center: pos, zoom: 13, zoomControl: true, attributionControl: false });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapInstance);
+  mapInitialized = true;
+  updateMapMarkers();
+}
+
+function updateMapMarkers() {
+  if (!mapInstance) return;
+  const activeIds = new Set(Object.keys(liveLocations)); activeIds.add(UID);
+  Object.keys(mapMarkers).forEach(id => { if (!activeIds.has(id)) { mapInstance.removeLayer(mapMarkers[id]); delete mapMarkers[id]; } });
+  if (myLat && myLng) updateMarker(UID, myLat, myLng, 'me', name);
+  Object.values(liveLocations).forEach(loc => { if (loc.id !== UID && loc.online) updateMarker(loc.id, loc.lat, loc.lng, loc.role, loc.name); });
+  // Delivery route lines
+  Object.values(myOrders).forEach(o => {
+    if ((o.status === 'delivering'||o.status==='ready') && o.deliveryId && liveLocations[o.deliveryId]) {
+      const delLoc = liveLocations[o.deliveryId];
+      const customerLoc = o.customerLat&&o.customerLng ? [o.customerLat, o.customerLng] : null;
+      const bakeryLoc = bakeries[o.bakeryId]?.location;
+      if (deliveryLines[o.id]) mapInstance.removeLayer(deliveryLines[o.id]);
+      const pts = [];
+      if (bakeryLoc) pts.push([bakeryLoc.lat, bakeryLoc.lng]);
+      if (delLoc.lat&&delLoc.lng) pts.push([delLoc.lat, delLoc.lng]);
+      if (customerLoc) pts.push(customerLoc);
+      if (pts.length >= 2) deliveryLines[o.id] = L.polyline(pts, { color: '#ffa726', weight: 3, opacity: 0.7, dashArray: '8,8' }).addTo(mapInstance);
+    }
+  });
+  // Update peer count
+  const peerEl = document.getElementById('mapPeers');
+  if (peerEl) {
+    const r = { seller: 0, customer: 0, delivery: 0 };
+    Object.values(liveLocations).forEach(l => { if (l.online && l.role) r[l.role]++; });
+    peerEl.innerHTML = `🏪 ${r.seller} · 🛒 ${r.customer} · 🚚 ${r.delivery} · 📡 ${Object.keys(mapMarkers).length} marker`;
+  }
+}
+
+function updateMarker(id, lat, lng, mRole, mName) {
+  const isMe = id === UID;
+  const colors = { seller: '#d4a574', customer: '#42a5f5', delivery: '#ab47bc', me: '#4caf50' };
+  const c = isMe ? colors.me : (colors[mRole]||'#666');
+  const label = isMe ? `${name} (siz)` : `${mName||'User'} ${mRole==='delivery'?'🚚':mRole==='seller'?'🏪':'🛒'}`;
+  const icon = L.divIcon({
+    html: `<div style="background:${c};width:${isMe?18:14}px;height:${isMe?18:14}px;border-radius:50%;border:3px solid rgba(255,255,255,0.8);box-shadow:0 2px 8px rgba(0,0,0,0.5);transition:all 0.3s"></div>`,
+    iconSize: isMe ? [18,18] : [14,14], iconAnchor: isMe ? [9,9] : [7,7], className: ''
+  });
+  if (mapMarkers[id]) { mapMarkers[id].setLatLng([lat, lng]); }
+  else { mapMarkers[id] = L.marker([lat, lng], { icon }).bindPopup(`<b>${label}</b>`).addTo(mapInstance); }
+}
+
+function centerMap() {
+  if (mapInstance && myLat && myLng) mapInstance.setView([myLat, myLng], 14);
+}
+
+setInterval(() => { if (mapInstance && role) updateMapMarkers(); }, 3000);
 
 // ====== SETTINGS ======
 function settingsView() {
   const appVersion = '3.0.0';
-  const roleLabels = { seller: '🏪 Nonvoy', customer: '🛒 Xaridor', delivery: '🚚 Yetkazib beruvchi' };
+  const roleLabels = { seller:'🏪 Nonvoy', customer:'🛒 Xaridor', delivery:'🚚 Yetkazib beruvchi', admin:'⚙️ Admin' };
   const totalPeers = Object.keys(liveLocations).filter(k => liveLocations[k].online).length + 1;
   return `
     <div class="section-title">⚙️ Sozlamalar</div>
     <div class="section-sub">Ilova haqida va yangilanishlar</div>
-
     <div class="card" style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <span style="font-size:0.85rem;color:var(--text-bright);font-weight:600">📱 ZIYOKOR NONLARI</span>
         <span class="status-badge status-accepted">v${appVersion}</span>
       </div>
       <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.8">
-        <div>👤 Siz: <span style="color:var(--text-bright)">${myName}</span> · ${roleLabels[myRole] || myRole}</div>
-        <div>📞 ${myPhone}</div>
+        <div>👤 Siz: <span style="color:var(--text-bright)">${name}</span> · ${roleLabels[role]||role}</div>
+        <div>📞 ${phone}</div>
         <div>📡 Peerlar: ${totalPeers} ta online</div>
-        ${myLat && myLng ? `<div>📍 GPS: ${myLat.toFixed(4)}, ${myLng.toFixed(4)}</div>` : '<div>📍 GPS: <span style="color:#ff6b6b">faol emas</span></div>'}
+        ${myLat&&myLng?`<div>📍 GPS: ${myLat.toFixed(4)}, ${myLng.toFixed(4)}</div>`:'<div>📍 GPS: <span style="color:var(--red)">faol emas</span></div>'}
       </div>
     </div>
-
     <div class="card" style="margin-bottom:12px">
       <div style="font-size:0.85rem;color:var(--text-bright);font-weight:600;margin-bottom:10px">📥 Yangilanishlar</div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" onclick="checkUpdate()">
-        🔄 Yangilanishni tekshirish
-      </button>
-      <button class="btn btn-success" style="width:100%;justify-content:center;margin-bottom:8px" onclick="downloadUpdate()">
-        ⬇️ APK yuklash (4.9 MB)
-      </button>
-      <p style="font-size:0.6rem;color:var(--text-dim);margin-top:8px;text-align:center">
-        APK to'g'ridan-to'g'ri serverdan yuklanadi · Android 6+ uchun
-      </p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" onclick="checkUpdate()">🔄 Yangilanishni tekshirish</button>
+      <button class="btn btn-success" style="width:100%;justify-content:center;margin-bottom:8px" onclick="downloadUpdate()">⬇️ APK yuklash (4.9 MB)</button>
+      <p style="font-size:0.6rem;color:var(--text-dim);text-align:center">APK to'g'ridan-to'g'ri serverdan yuklanadi · Android 6+</p>
     </div>
-
     <div class="card" style="margin-bottom:12px">
       <div style="font-size:0.85rem;color:var(--text-bright);font-weight:600;margin-bottom:10px">🗄 Tarmoq</div>
       <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.8">
         <div>🔗 Relay: ${window.location.origin}/gun</div>
-        <div>🆔 Node ID: <span class="coords-text">${myNodeId}</span></div>
+        <div>🆔 ID: <span style="font-family:monospace;font-size:0.6rem">${UID}</span></div>
         <div>📊 API: ${window.location.origin}/api/stats</div>
       </div>
     </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div style="font-size:0.85rem;color:var(--text-bright);font-weight:600;margin-bottom:10px">🔐 Maʼlumotlar</div>
-      <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.8">
-        <div>🟢 Barcha ma'lumotlar P2P tarmoq orqali sinxronlanadi</div>
-        <div>💾 IndexedDB da mahalliy saqlanadi</div>
-        <div>🌐 Hech qanday markaziy server yo'q</div>
-        <div>📡 Relay peer faqat ma'lumotlarni saqlash uchun</div>
-      </div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;justify-content:center" onclick="showToast('🗑 Ma\'lumotlar indekslangan...')">
-        🧹 Mahalliy keshni tozalash
-      </button>
-    </div>
-
     <div style="text-align:center;padding:20px 0;font-size:0.6rem;color:var(--text-dim)">
       <div>ZIYOKOR NONLARI v${appVersion}</div>
-      <div style="margin-top:4px">P2P · GPS · Decentralized</div>
-      <div style="margin-top:2px">⚡ Powered by Gun.js</div>
+      <div style="margin-top:2px">P2P · GPS · Powered by Gun.js</div>
     </div>
   `;
 }
 
 function checkUpdate() {
-  showToast('🔄 Yangilanish tekshirilmoqda...');
+  toast('🔄 Tekshirilmoqda...');
   fetch('https://api.github.com/repos/Xolericuz/ZIYOKOR-NONLARI/releases/latest')
-    .then(r => r.json())
-    .then(data => {
-      const latest = data.tag_name?.replace('v','') || '';
-      if (latest && latest > '3.0.0') {
-        showToast(`📥 Yangi versiya ${latest} mavjud!`);
-      } else {
-        showToast('✅ Siz eng so\'nggi versiyadasiz');
-      }
-    })
-    .catch(() => {
-      fetch('./version.json?_=' + Date.now())
-        .then(r => r.json())
-        .then(data => {
-          if (data.version && data.version > '3.0.0') showToast(`📥 Yangi versiya ${data.version} mavjud!`);
-          else showToast('✅ Siz eng so\'nggi versiyadasiz');
-        })
-        .catch(() => showToast('⚠️ Yangilanishni tekshirib bo\'lmadi'));
-    });
+    .then(r => r.json()).then(d => { toast((d.tag_name||'') > 'v3.0.0' ? '📥 Yangi versiya mavjud!' : '✅ Eng so\'nggi versiya'); })
+    .catch(() => fetch('./version.json?_='+Date.now()).then(r=>r.json()).then(d => toast(d.version > '3.0.0'?'📥 Yangi versiya':'✅ Eng so\'nggi')).catch(() => toast('⚠️ Tekshirib bo\'lmadi')));
 }
 
 function downloadUpdate() {
-  showToast('⬇️ Yuklanmoqda...');
-  const link = document.createElement('a');
-  link.href = 'nonlar.apk';
-  link.download = 'ziyokor-nonlari.apk';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  showToast('📥 Yuklab olish boshlandi');
+  const link = document.createElement('a'); link.href = 'nonlar.apk'; link.download = 'ziyokor-nonlari.apk';
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  toast('📥 Yuklab olish boshlandi');
 }
 
-// ====== MAP VIEW ======
-function mapView(role) {
-  setTimeout(() => initMap(role), 100);
-  return `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <div>
-        <div class="section-title">🗺 Jonli xarita</div>
-        <div class="section-sub">Real-time P2P GPS joylashuvlar</div>
-      </div>
-      <button class="btn btn-sm ${gpsActive ? 'btn-success' : 'btn-ghost'}" onclick="centerMap()">🎯 Markazga</button>
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-size:0.68rem">
-      <div class="legend-row"><span class="legend-dot nonvoy"></span> Nonvoy</div>
-      <div class="legend-row"><span class="legend-dot xaridor"></span> Xaridor</div>
-      <div class="legend-row"><span class="legend-dot yetkazish"></span> Yetkazuvchi</div>
-      <div class="legend-row"><span class="legend-dot siz"></span> Siz</div>
-    </div>
-    <div id="map" style="width:100%;height:60vh;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border)"></div>
-    <div id="mapPeers" style="margin-top:8px;font-size:0.65rem;color:var(--text-dim)"></div>
-  `;
+// ====== UTILS ======
+function calcDist(lat1, lng1, lat2, lng2) {
+  const R = 6371; const dLat = (lat2-lat1)*Math.PI/180; const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
 }
 
-let mapInitialized = false;
-function initMap(role) {
-  if (mapInstance) {
-    mapInstance.invalidateSize();
-    updateMapMarkers(role);
-    return;
-  }
-  const container = document.getElementById('map');
-  if (!container) return;
-  if (container._leaflet_id) return;
-
-  const defaultPos = myLat && myLng ? [myLat, myLng] : [41.2995, 69.2401]; // Tashkent default
-  mapInstance = L.map('map', {
-    center: defaultPos,
-    zoom: 13,
-    zoomControl: true,
-    attributionControl: false,
-  });
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    className: 'map-tiles'
-  }).addTo(mapInstance);
-
-  updateMapMarkers(role);
+function emptyState(icon, title, desc) {
+  return `<div class="empty-state"><span class="icon">${icon}</span><p>${title}</p><p class="hint">${desc}</p></div>`;
 }
 
-function updateMapMarkers(role) {
-  if (!mapInstance) return;
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escJs(s) { return (s||'').replace(/'/g, "\\'"); }
 
-  // Remove old markers not in current locations
-  const activeIds = new Set(Object.keys(liveLocations));
-  activeIds.add(myNodeId);
-  Object.keys(mapMarkers).forEach(id => {
-    if (!activeIds.has(id)) {
-      mapInstance.removeLayer(mapMarkers[id]);
-      delete mapMarkers[id];
-    }
-  });
-
-  // My location marker (always shown)
-  if (myLat && myLng) {
-    updateMarker(myNodeId, myLat, myLng, 'me', myName, myRole);
-  }
-
-  // All live locations
-  Object.values(liveLocations).forEach(loc => {
-    if (loc.id === myNodeId) return;
-    if (!loc.online) return;
-    updateMarker(loc.id, loc.lat, loc.lng, loc.role, loc.name, loc.role);
-  });
-
-  // Add delivery route lines if customer tracking delivery
-  if (role === 'customer') {
-    Object.values(myOrders).forEach(o => {
-      if ((o.status === 'delivering' || o.status === 'ready') && o.deliveryId && liveLocations[o.deliveryId]) {
-        const delLoc = liveLocations[o.deliveryId];
-        const customerLoc = o.customerLat && o.customerLng ? [o.customerLat, o.customerLng] : null;
-        const bakeryLoc = bakeries[o.bakeryId]?.location;
-
-        // Remove existing line for this order
-        if (deliveryLines[o.id]) {
-          mapInstance.removeLayer(deliveryLines[o.id]);
-        }
-
-        const points = [];
-        if (bakeryLoc) points.push([bakeryLoc.lat, bakeryLoc.lng]);
-        if (delLoc.lat && delLoc.lng) points.push([delLoc.lat, delLoc.lng]);
-        if (customerLoc) points.push(customerLoc);
-
-        if (points.length >= 2) {
-          deliveryLines[o.id] = L.polyline(points, {
-            color: '#ffa726',
-            weight: 3,
-            opacity: 0.7,
-            dashArray: '8, 8'
-          }).addTo(mapInstance);
-        }
-      }
-    });
-  }
-
-  // Order location markers
-  Object.values(orders).forEach(o => {
-    // Bakery location marker for the order
-    const bakeryLoc = bakeries[o.bakeryId]?.location;
-    if (bakeryLoc && o.status !== 'delivered') {
-      const key = 'order_bakery_' + o.id;
-      if (!mapMarkers[key]) {
-        const icon = L.divIcon({
-          html: '<div style="background:var(--gold);width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>',
-          iconSize: [14, 14],
-          iconAnchor: [7, 7],
-          className: ''
-        });
-        mapMarkers[key] = L.marker([bakeryLoc.lat, bakeryLoc.lng], { icon })
-          .bindPopup(`<b>🏪 ${o.bakeryName}</b><br>#${o.id.slice(-5)}`)
-          .addTo(mapInstance);
-      }
-    }
-    // Customer location marker
-    if (o.customerLat && o.customerLng && o.status !== 'delivered') {
-      const key = 'order_customer_' + o.id;
-      if (!mapMarkers[key]) {
-        const icon = L.divIcon({
-          html: '<div style="background:var(--blue);width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>',
-          iconSize: [12, 12],
-          iconAnchor: [6, 6],
-          className: ''
-        });
-        mapMarkers[key] = L.marker([o.customerLat, o.customerLng], { icon })
-          .bindPopup(`<b>🛒 ${o.customerName}</b><br>${o.address || ''}`)
-          .addTo(mapInstance);
-      }
-    }
-  });
-
-  // Update peers count
-  const peerEl = document.getElementById('mapPeers');
-  if (peerEl) {
-    const roles = { seller: 0, customer: 0, delivery: 0 };
-    Object.values(liveLocations).forEach(l => { if (l.online && l.role) roles[l.role]++; });
-    peerEl.innerHTML = `🏪 ${roles.seller} · 🛒 ${roles.customer} · 🚚 ${roles.delivery} · 📡 ${Object.keys(mapMarkers).length} marker`;
-  }
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-function updateMarker(id, lat, lng, role, name, actualRole) {
-  const isMe = id === myNodeId;
-  const colors = { seller: '#d4a574', customer: '#42a5f5', delivery: '#ab47bc', me: '#4caf50' };
-  const icons = { seller: '🏪', customer: '🛒', delivery: '🚚', me: '📍' };
-  const c = isMe ? colors.me : (colors[role] || '#666');
-  const iconLabel = isMe ? icons.me : (icons[role] || '📍');
-  const label = isMe ? `${myName} (siz)` : `${name || 'Foydalanuvchi'} ${role === 'delivery' ? '🚚' : role === 'seller' ? '🏪' : '🛒'}`;
-
-  const icon = L.divIcon({
-    html: `<div style="background:${c};width:${isMe ? 18 : 14}px;height:${isMe ? 18 : 14}px;border-radius:50%;border:3px solid rgba(255,255,255,0.8);box-shadow:0 2px 8px rgba(0,0,0,0.5);transition:all 0.3s"></div>`,
-    iconSize: isMe ? [18, 18] : [14, 14],
-    iconAnchor: isMe ? [9, 9] : [7, 7],
-    className: ''
-  });
-
-  if (mapMarkers[id]) {
-    mapMarkers[id].setLatLng([lat, lng]);
-  } else {
-    mapMarkers[id] = L.marker([lat, lng], { icon })
-      .bindPopup(`<b>${iconLabel} ${label}</b>${isMe ? '<br><span style="color:#4caf50">📍 Siz</span>' : `<br><span style="color:${c}">${actualRole === 'delivery' ? '🚚 Yetkazib beruvchi' : actualRole === 'seller' ? '🏪 Nonvoy' : '🛒 Xaridor'}</span>`}`)
-      .addTo(mapInstance);
-  }
+function showModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
 }
 
-function centerMap() {
-  if (!mapInstance || !myLat || !myLng) return;
-  mapInstance.setView([myLat, myLng], 14);
-}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-// Periodic map updates
+// ====== FLOATING BUTTONS ======
 setInterval(() => {
-  if (mapInstance && myRole) {
-    updateMapMarkers(myRole);
+  if (!role) return;
+  // Chat FAB
+  if (!document.getElementById('chatFab')) {
+    const fab = document.createElement('div');
+    fab.style.cssText = 'position:fixed;bottom:100px;right:16px;z-index:500';
+    fab.innerHTML = `<button id="chatFab" class="btn btn-primary" style="width:56px;height:56px;border-radius:50%;padding:0;justify-content:center;font-size:1.4rem;box-shadow:0 4px 16px rgba(0,0,0,0.4);position:relative">💬<span class="badge" style="position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:0.55rem;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700"></span></button>`;
+    document.body.appendChild(fab);
+    document.getElementById('chatFab').onclick = showChatContacts;
   }
-}, 3000);
+  // Cart FAB (customer only)
+  if (role === 'customer' && !document.getElementById('cartFab') && Object.keys(cart).length > 0) {
+    const fab = document.createElement('button');
+    fab.id = 'cartFab'; fab.className = 'btn btn-primary';
+    fab.style.cssText = 'position:fixed;bottom:24px;right:16px;z-index:500;padding:12px 20px;border-radius:100px;box-shadow:0 4px 20px var(--gold-dim)';
+    fab.innerHTML = '🛒 <span class="badge" style="margin-left:4px">0</span>';
+    fab.onclick = showCart; document.body.appendChild(fab);
+  }
+  if (role !== 'customer') document.getElementById('cartFab')?.remove();
+  if (Object.keys(cart).length === 0) document.getElementById('cartFab')?.remove();
+  updateCartFab();
+  updateChatBadge();
+}, 1000);
 
-// ====== DELIVERY MINI MAP ======
+// ====== INIT ======
+showLogin();
+
+// Delivery mini map
 setInterval(() => {
   const mini = document.getElementById('deliveryMiniMap');
-  if (mini && !mini._leaflet_id && myRole === 'delivery' && currentTab === 2) {
-    const m = L.map('deliveryMiniMap', {
-      center: myLat && myLng ? [myLat, myLng] : [41.2995, 69.2401],
-      zoom: 13,
-      zoomControl: false,
-      attributionControl: false,
-    });
+  if (mini && !mini._leaflet_id && role === 'delivery' && currentTab === 2) {
+    const m = L.map('deliveryMiniMap', { center: myLat&&myLng?[myLat,myLng]:[41.2995,69.2401], zoom: 13, zoomControl: false, attributionControl: false });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(m);
-    if (myLat && myLng) {
-      L.marker([myLat, myLng], {
-        icon: L.divIcon({ html: '<div style="background:#ab47bc;width:16px;height:16px;border-radius:50%;border:3px solid #fff"></div>', iconSize: [16, 16], iconAnchor: [8, 8], className: '' })
-      }).addTo(m);
-    }
-    // Show assigned delivery points
+    if (myLat && myLng) L.marker([myLat, myLng], { icon: L.divIcon({ html: '<div style="background:#ab47bc;width:16px;height:16px;border-radius:50%;border:3px solid #fff"></div>', iconSize: [16,16], iconAnchor: [8,8], className: '' }) }).addTo(m);
     Object.values(myOrders).forEach(o => {
       if (o.status === 'delivering' || o.status === 'ready') {
         const bakeryLoc = bakeries[o.bakeryId]?.location;
-        if (bakeryLoc) {
-          L.marker([bakeryLoc.lat, bakeryLoc.lng], {
-            icon: L.divIcon({ html: '<div style="background:var(--gold);width:12px;height:12px;border-radius:50%;border:2px solid #fff"></div>', iconSize: [12, 12], iconAnchor: [6, 6], className: '' })
-          }).bindPopup(`<b>🏪 ${o.bakeryName}</b>`).addTo(m);
-        }
+        if (bakeryLoc) L.marker([bakeryLoc.lat, bakeryLoc.lng], { icon: L.divIcon({ html: '<div style="background:var(--gold);width:12px;height:12px;border-radius:50%;border:2px solid #fff"></div>', iconSize: [12,12], iconAnchor: [6,6], className: '' }) }).bindPopup(`<b>🏪 ${o.bakeryName}</b>`).addTo(m);
         if (o.customerLat && o.customerLng) {
-          L.marker([o.customerLat, o.customerLng], {
-            icon: L.divIcon({ html: '<div style="background:var(--blue);width:12px;height:12px;border-radius:50%;border:2px solid #fff"></div>', iconSize: [12, 12], iconAnchor: [6, 6], className: '' })
-          }).bindPopup(`<b>🛒 ${o.customerName}</b><br>📍 ${o.address || ''}`).addTo(m);
-          if (myLat && myLng) {
-            L.polyline([[myLat, myLng], [o.customerLat, o.customerLng]], { color: '#ab47bc', weight: 2, dashArray: '5,5' }).addTo(m);
-          }
+          L.marker([o.customerLat, o.customerLng], { icon: L.divIcon({ html: '<div style="background:var(--blue);width:12px;height:12px;border-radius:50%;border:2px solid #fff"></div>', iconSize: [12,12], iconAnchor: [6,6], className: '' }) }).bindPopup(`<b>🛒 ${o.customerName}</b><br>📍 ${o.address||''}`).addTo(m);
+          if (myLat && myLng) L.polyline([[myLat, myLng], [o.customerLat, o.customerLng]], { color: '#ab47bc', weight: 2, dashArray: '5,5' }).addTo(m);
         }
       }
     });
     setTimeout(() => m.invalidateSize(), 200);
   }
 }, 2000);
-
-// ====== UTILITIES ======
-function calcDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371;
-  const dLat = (lat2-lat1)*Math.PI/180;
-  const dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
-}
-
-function emptyState(icon, title, desc, hint) {
-  return `<div class="empty-state">
-    <span class="icon">${icon}</span>
-    <p>${title}</p>
-    <p class="hint">${desc}</p>
-    ${hint ? `<p class="hint" style="margin-top:6px">${hint}</p>` : ''}
-  </div>`;
-}
-
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 3000);
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('active');
-}
-
-document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
-
-// ====== INIT ======
-showLogin();
-
-// Chat FAB (all roles)
-function initChatFab() {
-  if (!document.getElementById('chatFabContainer')) {
-    document.body.insertAdjacentHTML('beforeend', chatFabHtml());
-    subscribeChats();
-  }
-}
-
-// Cart FAB
-setInterval(() => {
-  if (myRole) initChatFab();
-
-  if (myRole !== 'customer') {
-    document.getElementById('cartFab')?.remove();
-    return;
-  }
-  if (!document.getElementById('cartFab') && myRole === 'customer') {
-    const fab = document.createElement('button');
-    fab.id = 'cartFab';
-    fab.className = 'btn btn-primary';
-    fab.style.cssText = 'position:fixed;bottom:24px;right:16px;z-index:500;padding:12px 20px;border-radius:100px;box-shadow:0 4px 20px var(--gold-dim)';
-    fab.innerHTML = '🛒 <span class="badge" style="margin-left:4px">0</span>';
-    fab.onclick = showCart;
-    document.body.appendChild(fab);
-  }
-  updateCartFab();
-}, 1000);
 </script>
 </body>
 </html>

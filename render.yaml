@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ziyokor-p2p
+    runtime: node
+    repo: https://github.com/Xolericuz/ZIYOKOR-NONLARI
+    branch: main
+    buildCommand: cd p2p && npm ci --only=production
+    startCommand: cd p2p && node server.js
+    envVars:
+      - key: PORT
+        value: "3456"
+    healthCheckPath: /api/stats
+    plan: free
