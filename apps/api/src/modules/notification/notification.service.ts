@@ -1,41 +1,23 @@
 import { Injectable } from '@nestjs/common';
-
-interface Notification {
-  id: string;
-  userId: string;
-  title: string;
-  message: string;
-  type: string;
-  read: boolean;
-  createdAt: Date;
-}
-
-const notifications: Notification[] = [];
+import { PrismaService } from '../../common/prisma.service';
 
 @Injectable()
 export class NotificationService {
-  create(dto: {
-    userId: string;
-    title: string;
-    message: string;
-    type: string;
-  }): Notification {
-    const notification: Notification = {
-      id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-      userId: dto.userId,
-      title: dto.title,
-      message: dto.message,
-      type: dto.type,
-      read: false,
-      createdAt: new Date(),
-    };
-    notifications.push(notification);
-    return notification;
+  constructor(private prisma: PrismaService) {}
+
+  async create(userId: string, title: string, body?: string, data?: any) {
+    return this.prisma.notification.create({ data: { userId, title, body, data } });
   }
 
-  findByUser(userId: string): Notification[] {
-    return notifications
-      .filter((n) => n.userId === userId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  async findUserNotifications(userId: string) {
+    return this.prisma.notification.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, take: 50 });
+  }
+
+  async markRead(id: string) {
+    return this.prisma.notification.update({ where: { id }, data: { isRead: true } });
+  }
+
+  async markAllRead(userId: string) {
+    return this.prisma.notification.updateMany({ where: { userId, isRead: false }, data: { isRead: true } });
   }
 }

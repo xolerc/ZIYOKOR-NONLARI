@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ZIYOKOR NONLARI — 3D Non Marketplace</title>
+<script src="gun/gun.js"></script>
+<link rel="stylesheet" href="app/styles.css"/>
+<link rel="manifest" href="manifest.json"/>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app"></div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+<div id="bottomNav"></div>
+
+<script src="app/data.js"></script>
+<script src="app/ui.js"></script>
+<script src="app/core.js"></script>
+<script src="app/auth.js"></script>
+<script src="app/chat.js"></script>
+<script src="app/map.js"></script>
+<script src="app/cart.js"></script>
+<script src="app/customer.js"></script>
+<script src="app/seller.js"></script>
+<script src="app/delivery.js"></script>
+<script src="app/admin.js"></script>
+<script src="app/app.js"></script>
+<script type="module" src="three/loader.js"></script>
+</body>
+</html>

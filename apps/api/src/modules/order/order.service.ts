@@ -1,74 +1,72 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
-interface OrderItem {
-  productId: string;
-  name: string;
-  quantity: number;
-  price: number;
-}
-
-interface Order {
-  id: string;
-  customerId: string;
-  customerName: string;
-  bakeryId: string;
-  bakeryName: string;
-  items: OrderItem[];
-  totalAmount: number;
-  status: string;
-  deliveryAddress: string;
-  phone: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const orders: Order[] = [];
+import { PrismaService } from '../../common/prisma.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class OrderService {
-  create(dto: any): Order {
-    const order: Order = {
-      id: `order-${Date.now()}`,
-      customerId: dto.customerId,
-      customerName: dto.customerName || '',
-      bakeryId: dto.bakeryId,
-      bakeryName: dto.bakeryName || '',
-      items: dto.items || [],
-      totalAmount: dto.totalAmount || 0,
-      status: 'pending',
-      deliveryAddress: dto.deliveryAddress || '',
-      phone: dto.phone || '',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    orders.push(order);
-    return order;
-  }
+  constructor(
+    private prisma: PrismaService,
+    private notifications: NotificationService,
+  ) {}
 
-  findAll(): Order[] {
-    return orders;
-  }
-
-  findOne(id: string): Order {
-    const order = orders.find((o) => o.id === id);
-    if (!order) {
-      throw new NotFoundException(`Order with id ${id} not found`);
+  async create(data: {
+    customerId: string; sellerId: string; items: { productId?: string; name: string; price: number; quantity: number }[];
+    total: number; address: string; lat?: number; lng?: number; paymentMethod?: string;
+  }) {
+    const order = await this.prisma.order.create({
+      data: {
+        customerId: data.customerId,
+        sellerId: data.sellerId,
+        total: data.total,
+        address: data.address,
+        lat: data.lat,
+        lng: data.lng,
+        paymentMethod: (data.paymentMethod as any) || 'CASH',
+        items: { create: data.items },
+      },
+      include: { items: true, customer: true, seller: { include: { user: true } } },
+    });
+    if (order.seller) {
+      await this.notifications.create(order.seller.userId, 'Yangi buyurtma', `#${order.id.slice(-5)} yangi buyurtma`);
     }
     return order;
   }
 
-  findByCustomer(customerId: string): Order[] {
-    return orders.filter((o) => o.customerId === customerId);
+  async findAll(params: { userId?: string; role?: string; status?: string }) {
+    const where: any = {};
+    if (params.userId && params.role === 'CUSTOMER') where.customerId = params.userId;
+    if (params.userId && params.role === 'SELLER') where.sellerId = params.userId;
+    if (params.userId && params.role === 'DELIVERY') where.driverId = params.userId;
+    if (params.status) where.status = params.status;
+    return this.prisma.order.findMany({
+      where,
+      include: { items: true, customer: true, seller: { include: { user: true } }, driver: true, review: true },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
-  findByBakery(bakeryId: string): Order[] {
-    return orders.filter((o) => o.bakeryId === bakeryId);
-  }
-
-  updateStatus(id: string, status: string): Order {
-    const order = this.findOne(id);
-    order.status = status;
-    order.updatedAt = new Date();
+  async findOne(id: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: { items: true, customer: true, seller: { include: { user: true } }, driver: true, review: true },
+    });
+    if (!order) throw new NotFoundException('Buyurtma topilmadi');
     return order;
+  }
+
+  async updateStatus(id: string, status: string, driverId?: string) {
+    const data: any = { status };
+    if (driverId && status === 'DELIVERING') data.driverId = driverId;
+    if (status === 'DELIVERED') data.deliveredAt = new Date();
+    return this.prisma.order.update({ where: { id }, data, include: { items: true, customer: true, seller: { include: { user: true } }, driver: true } });
+  }
+
+  async getStats(sellerId: string) {
+    const [totalOrders, activeOrders, revenue] = await Promise.all([
+      this.prisma.order.count({ where: { sellerId } }),
+      this.prisma.order.count({ where: { sellerId, status: { notIn: ['DELIVERED', 'REJECTED'] } } }),
+      this.prisma.order.aggregate({ where: { sellerId, status: 'DELIVERED' }, _sum: { total: true } }),
+    ]);
+    return { totalOrders, activeOrders, revenue: revenue._sum.total || 0 };
   }
 }

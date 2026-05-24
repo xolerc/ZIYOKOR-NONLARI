@@ -26,7 +26,7 @@ export const SOCKET_EVENTS = {
 })
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   private onlineUsers = new Map<string, string>();
 

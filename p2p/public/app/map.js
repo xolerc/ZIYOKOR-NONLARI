@@ -1,6 +1,9 @@
-// ZIYOKOR NONLARI — GPS Map
+// ZIYOKOR NONLARI — GPS Map (2D Leaflet + 3D Three.js)
+let _3dActive = false;
+
 ZN.map = {
   init(){
+    if(_3dActive) return;
     if(ZN.state._mapInstance){
       ZN.state._mapInstance.invalidateSize();
       this.updateMarkers();
@@ -19,9 +22,39 @@ ZN.map = {
       ZN.state._mapInstance.setView([ZN.state.myLat, ZN.state.myLng], 14);
   },
 
+  toggle3D(){
+    _3dActive = !_3dActive;
+    if(_3dActive){
+      // Switch to 3D
+      const mapCont = document.getElementById('map');
+      if(!mapCont) return;
+      if(ZN.state._mapInstance){ ZN.state._mapInstance.remove(); ZN.state._mapInstance = null; }
+      mapCont.innerHTML = '';
+      mapCont.style.background = 'transparent';
+      if(window.ThreeMap){
+        window.ThreeMap.init(mapCont);
+        // Add existing bakeries as 3D buildings
+        Object.values(ZN.state.bakeries).forEach(b => {
+          if(b.location) window.ThreeMap.addBakery(b.location.lat, b.location.lng, b.name);
+        });
+        // Add live delivery cars
+        Object.values(ZN.state.liveLocations).forEach(l => {
+          if(l.role === 'delivery' && l.online) window.ThreeMap.addCar(l.lat, l.lng, 0xff6600);
+        });
+      }
+    } else {
+      // Switch back to 2D
+      if(window.ThreeMap) window.ThreeMap.destroy();
+      const mapCont = document.getElementById('map');
+      if(mapCont) mapCont.innerHTML = '';
+      ZN.state._mapInstance = null;
+      setTimeout(() => { ZN.map.init(); ZN.map.updateMarkers(); }, 100);
+    }
+  },
+
   updateMarkers(){
     const map = ZN.state._mapInstance;
-    if(!map) return;
+    if(!map || _3dActive) return;
 
     const activeIds = new Set(Object.keys(ZN.state.liveLocations));
     activeIds.add(ZN.state.uid);
@@ -38,7 +71,6 @@ ZN.map = {
         this._updateMarker(loc.id, loc.lat, loc.lng, loc.role, loc.name);
     });
 
-    // Delivery route lines
     Object.values(ZN.state.myOrders).forEach(o => {
       if((o.status==='delivering'||o.status==='ready') && o.deliveryId && ZN.state.liveLocations[o.deliveryId]){
         const delLoc = ZN.state.liveLocations[o.deliveryId];
@@ -70,21 +102,25 @@ ZN.map = {
   },
 
   view(title){
-    setTimeout(()=>this.init(), 100);
+    if(!_3dActive) setTimeout(()=>this.init(), 100);
     const roleCounts = {seller:0,customer:0,delivery:0};
     Object.values(ZN.state.liveLocations).forEach(l=>{if(l.online&&l.role)roleCounts[l.role]++;});
     return `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div><div class="section-title">${title||'🗺 Jonli xarita'}</div><div class="section-sub">Real-time P2P GPS joylashuvlar</div></div>
-        <button class="btn btn-sm ${ZN.state.gpsActive?'btn-success':'btn-ghost'}" onclick="ZN.map.center()" title="Markazga">🎯</button>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm ${_3dActive?'btn-gold':'btn-ghost'}" onclick="ZN.map.toggle3D()" title="3D ko‘rinish">3D</button>
+          <button class="btn btn-sm ${ZN.state.gpsActive?'btn-success':'btn-ghost'}" onclick="ZN.map.center()" title="Markazga">🎯</button>
+        </div>
       </div>
       <div class="legend">
         <div class="legend-item"><span class="legend-dot seller"></span>Nonvoy (${roleCounts.seller})</div>
         <div class="legend-item"><span class="legend-dot customer"></span>Xaridor (${roleCounts.customer})</div>
         <div class="legend-item"><span class="legend-dot delivery"></span>Yetkazuvchi (${roleCounts.delivery})</div>
         <div class="legend-item"><span class="legend-dot me"></span>Siz</div>
+        ${_3dActive ? '<div class="legend-item" style="color:var(--gold)">🎮 3D rejim — sichqoncha bilan aylantiring</div>' : ''}
       </div>
-      <div id="map"></div>
+      <div id="map" style="${_3dActive ? 'height:500px;border-radius:16px;overflow:hidden' : ''}"></div>
       <div id="mapPeers" style="margin-top:6px;font-size:0.6rem;color:var(--text-dim)"></div>`;
   },
 
@@ -110,5 +146,4 @@ ZN.map = {
   },
 };
 
-// Auto-update map markers
 setInterval(()=>{ if(ZN.state._mapInstance&&ZN.state.role) ZN.map.updateMarkers(); }, 3000);

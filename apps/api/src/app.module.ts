@@ -1,31 +1,33 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from './config/config.module';
-import { DatabaseModule } from './common/database.module';
-import { RedisModule } from './common/redis.module';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './common/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { BakeryModule } from './modules/bakery/bakery.module';
 import { ProductModule } from './modules/product/product.module';
 import { OrderModule } from './modules/order/order.module';
-import { DeliveryModule } from './modules/delivery/delivery.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { DeliveryModule } from './modules/delivery/delivery.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { NotificationModule } from './modules/notification/notification.module';
-import { SocketModule } from './modules/socket/socket.module';
 import { AdminModule } from './modules/admin/admin.module';
-import { DriverModule } from './modules/driver/driver.module';
+import { SocketModule } from './modules/socket/socket.module';
 
 @Module({
   imports: [
-    ConfigModule,
-    DatabaseModule,
-    RedisModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
     AuthModule,
+    UserModule,
+    BakeryModule,
     ProductModule,
     OrderModule,
-    DeliveryModule,
     PaymentModule,
+    DeliveryModule,
+    ChatModule,
     NotificationModule,
-    SocketModule,
     AdminModule,
-    DriverModule,
+    SocketModule,
   ],
 })
 export class AppModule {}

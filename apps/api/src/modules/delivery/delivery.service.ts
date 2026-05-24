@@ -1,47 +1,31 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-
-interface Delivery {
-  id: string;
-  orderId: string;
-  driverId: string;
-  driverName: string;
-  status: string;
-  pickupAddress: string;
-  deliveryAddress: string;
-  assignedAt: Date;
-  completedAt?: Date;
-}
-
-const deliveries: Delivery[] = [];
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../common/prisma.service';
 
 @Injectable()
 export class DeliveryService {
-  assign(dto: any): Delivery {
-    const delivery: Delivery = {
-      id: `delivery-${Date.now()}`,
-      orderId: dto.orderId,
-      driverId: dto.driverId,
-      driverName: dto.driverName || '',
-      status: 'assigned',
-      pickupAddress: dto.pickupAddress || '',
-      deliveryAddress: dto.deliveryAddress || '',
-      assignedAt: new Date(),
-    };
-    deliveries.push(delivery);
-    return delivery;
+  constructor(private prisma: PrismaService) {}
+
+  async getAvailableOrders() {
+    return this.prisma.order.findMany({ where: { status: 'READY' }, include: { items: true, customer: true, seller: { include: { user: true } } } });
   }
 
-  complete(id: string): Delivery {
-    const delivery = deliveries.find((d) => d.id === id);
-    if (!delivery) {
-      throw new NotFoundException(`Delivery with id ${id} not found`);
-    }
-    delivery.status = 'completed';
-    delivery.completedAt = new Date();
-    return delivery;
+  async getMyDeliveries(driverId: string) {
+    return this.prisma.order.findMany({ where: { driverId, status: { notIn: ['DELIVERED', 'REJECTED'] } }, include: { items: true, customer: true, seller: { include: { user: true } } } });
   }
 
-  findByDriver(driverId: string): Delivery[] {
-    return deliveries.filter((d) => d.driverId === driverId);
+  async claimOrder(orderId: string, driverId: string) {
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { driverId, status: 'DELIVERING' },
+      include: { items: true, customer: true, seller: true },
+    });
+  }
+
+  async getStats(driverId: string) {
+    const [completed, totalRevenue] = await Promise.all([
+      this.prisma.order.count({ where: { driverId, status: 'DELIVERED' } }),
+      this.prisma.order.aggregate({ where: { driverId, status: 'DELIVERED' }, _sum: { total: true } }),
+    ]);
+    return { completed, revenue: totalRevenue._sum.total || 0 };
   }
 }

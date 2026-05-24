@@ -10,6 +10,14 @@
 <script>if(typeof L==='undefined'){document.write('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>')}</script>
 <link rel="stylesheet" href="app/styles.css"/>
 <link rel="manifest" href="manifest.json"/>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+  }
+}
+</script>
 </head>
 <body>
 <div id="app"></div>
@@ -29,5 +37,6 @@
 <script src="app/delivery.js"></script>
 <script src="app/admin.js"></script>
 <script src="app/app.js"></script>
+<script type="module" src="three/loader.js"></script>
 </body>
 </html>

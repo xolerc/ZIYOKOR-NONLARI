@@ -1,67 +1,19 @@
 import { Injectable } from '@nestjs/common';
-
-interface Payment {
-  id: string;
-  orderId: string;
-  amount: number;
-  provider: string;
-  status: string;
-  createdAt: Date;
-  paidAt?: Date;
-}
-
-const payments: Payment[] = [];
+import { PrismaService } from '../../common/prisma.service';
 
 @Injectable()
 export class PaymentService {
-  create(dto: any): Payment {
-    const payment: Payment = {
-      id: `pay-${Date.now()}`,
-      orderId: dto.orderId,
-      amount: dto.amount,
-      provider: dto.provider || 'click',
-      status: 'pending',
-      createdAt: new Date(),
-    };
-    payments.push(payment);
-    return payment;
+  constructor(private prisma: PrismaService) {}
+
+  async createPayment(orderId: string, method: string, amount: number) {
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { paymentMethod: method as any, paymentStatus: 'PAID' },
+    });
   }
 
-  clickCallback(dto: any): { success: boolean; payment: Payment } {
-    const payment =
-      payments.find((p) => p.id === dto.paymentId) ||
-      this.create({ orderId: dto.orderId, amount: dto.amount, provider: 'click' });
-
-    const transactionId = `click-trn-${Date.now()}`;
-
-    payment.status = 'paid';
-    payment.paidAt = new Date();
-
-    return {
-      success: true,
-      payment: {
-        ...payment,
-        clickTransactionId: transactionId,
-      } as any,
-    };
-  }
-
-  paymeCallback(dto: any): { success: boolean; payment: Payment } {
-    const payment =
-      payments.find((p) => p.id === dto.paymentId) ||
-      this.create({ orderId: dto.orderId, amount: dto.amount, provider: 'payme' });
-
-    const transactionId = `payme-trn-${Date.now()}`;
-
-    payment.status = 'paid';
-    payment.paidAt = new Date();
-
-    return {
-      success: true,
-      payment: {
-        ...payment,
-        paymeTransactionId: transactionId,
-      } as any,
-    };
+  async getPaymentStatus(orderId: string) {
+    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+    return { status: order?.paymentStatus, method: order?.paymentMethod };
   }
 }

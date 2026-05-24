@@ -1,121 +1,71 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../../common/prisma.service';
 import * as bcrypt from 'bcrypt';
-
-interface User {
-  id: string;
-  name: string;
-  phone: string;
-  password: string;
-  role: 'customer' | 'seller' | 'driver' | 'admin';
-  createdAt: Date;
-}
-
-interface RegisterDto {
-  name: string;
-  phone: string;
-  password: string;
-  role: 'customer' | 'seller' | 'driver' | 'admin';
-}
-
-interface LoginDto {
-  phone: string;
-  password: string;
-}
-
-const users: User[] = [
-  {
-    id: 'admin-1',
-    name: 'Admin',
-    phone: '+998901234567',
-    password: '$2b$10$dummy',
-    role: 'admin',
-    createdAt: new Date(),
-  },
-];
-
-const SALT_ROUNDS = 10;
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+  ) {}
 
-  async register(dto: RegisterDto) {
-    const existing = users.find((u) => u.phone === dto.phone);
-    if (existing) {
-      throw new ConflictException('User with this phone already exists');
-    }
-
-    const hashedPassword = await bcrypt.hash(dto.password, SALT_ROUNDS);
-
-    const user: User = {
-      id: `user-${Date.now()}`,
-      name: dto.name,
-      phone: dto.phone,
-      password: hashedPassword,
-      role: dto.role,
-      createdAt: new Date(),
-    };
-
-    users.push(user);
-
-    const token = this.jwtService.sign({
-      sub: user.id,
-      phone: user.phone,
-      role: user.role,
-    });
-
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        phone: user.phone,
-        role: user.role,
-      },
-      token,
-    };
+  async sendOtp(phone: string) {
+    const code = '1234';
+    return { success: true, message: 'SMS yuborildi', code };
   }
 
-  async login(dto: LoginDto) {
-    const user = users.find((u) => u.phone === dto.phone);
+  async verifyOtp(phone: string, code: string) {
+    if (code !== '1234') throw new UnauthorizedException('Kod noto\'g\'ri');
+    let user = await this.prisma.user.findUnique({ where: { phone } });
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      user = await this.prisma.user.create({
+        data: { phone, name: 'Foydalanuvchi', role: 'CUSTOMER' },
+      });
     }
+    const token = this.jwt.sign({ id: user.id, phone: user.phone, role: user.role });
+    return { token, user };
+  }
 
-    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+  async register(data: { phone: string; name: string; role: string; bakeryName?: string; vehicleType?: string }) {
+    const existing = await this.prisma.user.findUnique({ where: { phone: data.phone } });
+    if (existing) throw new UnauthorizedException('Bu raqam avval ro\'yxatdan o\'tgan');
 
-    const token = this.jwtService.sign({
-      sub: user.id,
-      phone: user.phone,
-      role: user.role,
+    const user = await this.prisma.user.create({
+      data: {
+        phone: data.phone,
+        name: data.name,
+        role: data.role as any,
+        ...(data.role === 'SELLER' ? {
+          sellerProfile: { create: { bakeryName: data.bakeryName || '' } }
+        } : {}),
+        ...(data.role === 'DELIVERY' ? {
+          deliveryProfile: { create: { vehicleType: data.vehicleType } }
+        } : {}),
+        ...(data.role === 'CUSTOMER' ? {
+          customerProfile: { create: {} }
+        } : {}),
+      },
+      include: {
+        sellerProfile: true,
+        deliveryProfile: true,
+        customerProfile: true,
+      },
     });
 
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        phone: user.phone,
-        role: user.role,
+    const token = this.jwt.sign({ id: user.id, phone: user.phone, role: user.role });
+    return { token, user };
+  }
+
+  async me(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        sellerProfile: { include: { products: true } },
+        deliveryProfile: true,
+        customerProfile: true,
+        addresses: true,
       },
-      token,
-    };
-  }
-
-  findById(id: string): User | undefined {
-    return users.find((u) => u.id === id);
-  }
-
-  getAllUsers(): User[] {
-    return users.map((u) => ({
-      ...u,
-      password: undefined,
-    })) as unknown as User[];
+    });
   }
 }

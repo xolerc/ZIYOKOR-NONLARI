@@ -1,27 +1,35 @@
-import { Controller, Get, Post, Param, Body, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { OrderService } from './order.service';
 
 @Controller('orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private orders: OrderService) {}
 
   @Post()
-  create(@Body() dto: any) {
-    return this.orderService.create(dto);
+  @UseGuards(AuthGuard('jwt'))
+  create(@Req() req: any, @Body() body: any) {
+    return this.orders.create({ ...body, customerId: req.user.id });
   }
 
-  @Get('customer/:userId')
-  findByCustomer(@Param('userId') userId: string) {
-    return this.orderService.findByCustomer(userId);
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  findAll(@Req() req: any, @Query('status') status?: string) {
+    return this.orders.findAll({ userId: req.user.id, role: req.user.role, status });
   }
 
-  @Get('bakery/:bakeryId')
-  findByBakery(@Param('bakeryId') bakeryId: string) {
-    return this.orderService.findByBakery(bakeryId);
+  @Get('stats')
+  @UseGuards(AuthGuard('jwt'))
+  getStats(@Req() req: any) {
+    return this.orders.getStats(req.user.id);
   }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) { return this.orders.findOne(id); }
 
   @Patch(':id/status')
-  updateStatus(@Param('id') id: string, @Body() dto: { status: string }) {
-    return this.orderService.updateStatus(id, dto.status);
+  @UseGuards(AuthGuard('jwt'))
+  updateStatus(@Param('id') id: string, @Body() body: any) {
+    return this.orders.updateStatus(id, body.status, body.driverId);
   }
 }

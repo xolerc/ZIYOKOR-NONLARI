@@ -1,26 +1,20 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
-import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET', 'ziyokor-secret-key'),
-        signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '7d'),
-        },
-      }),
-      inject: [ConfigService],
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'ziyokor-secret',
+      signOptions: { expiresIn: '7d' },
     }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtModule, PassportModule],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

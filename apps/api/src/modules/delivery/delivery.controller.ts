@@ -1,22 +1,21 @@
-import { Controller, Get, Post, Patch, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { DeliveryService } from './delivery.service';
 
-@Controller('deliveries')
+@Controller('delivery')
+@UseGuards(AuthGuard('jwt'))
 export class DeliveryController {
-  constructor(private readonly deliveryService: DeliveryService) {}
+  constructor(private delivery: DeliveryService) {}
 
-  @Post('assign')
-  assign(@Body() dto: any) {
-    return this.deliveryService.assign(dto);
-  }
+  @Get('available')
+  getAvailable() { return this.delivery.getAvailableOrders(); }
 
-  @Patch(':id/complete')
-  complete(@Param('id') id: string) {
-    return this.deliveryService.complete(id);
-  }
+  @Get('my')
+  getMy(@Req() req: any) { return this.delivery.getMyDeliveries(req.user.id); }
 
-  @Get('driver/:driverId')
-  findByDriver(@Param('driverId') driverId: string) {
-    return this.deliveryService.findByDriver(driverId);
-  }
+  @Post('claim/:orderId')
+  claim(@Param('orderId') orderId: string, @Req() req: any) { return this.delivery.claimOrder(orderId, req.user.id); }
+
+  @Get('stats')
+  getStats(@Req() req: any) { return this.delivery.getStats(req.user.id); }
 }

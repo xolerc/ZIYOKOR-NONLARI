@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-interface Driver {
+export interface Driver {
   id: string;
   name: string;
   phone: string;

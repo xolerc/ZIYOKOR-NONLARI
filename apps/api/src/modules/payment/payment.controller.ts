@@ -1,22 +1,15 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { PaymentService } from './payment.service';
 
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(private payments: PaymentService) {}
 
-  @Post('create')
-  create(@Body() dto: any) {
-    return this.paymentService.create(dto);
-  }
+  @Post()
+  @UseGuards(AuthGuard('jwt'))
+  pay(@Body() body: any) { return this.payments.createPayment(body.orderId, body.method, body.amount); }
 
-  @Post('click/callback')
-  clickCallback(@Body() dto: any) {
-    return this.paymentService.clickCallback(dto);
-  }
-
-  @Post('payme/callback')
-  paymeCallback(@Body() dto: any) {
-    return this.paymentService.paymeCallback(dto);
-  }
+  @Get(':orderId')
+  status(@Param('orderId') orderId: string) { return this.payments.getPaymentStatus(orderId); }
 }
