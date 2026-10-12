@@ -1,16 +1,5 @@
 node_modules/
-dist/
-.next/
-.env
 *.log
+mobile/android/app/build/
+**/app-debug.apk
 .DS_Store
-*.pyc
-__pycache__/
-*.db
-*.tsbuildinfo
-# GitHub Pages copies (generated from p2p/public/)
-/gun/
-/lib/
-/nonlar.apk
-/version.json
-/mobile/android/app/build/
