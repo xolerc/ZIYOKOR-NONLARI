@@ -52,4 +52,7 @@ npx serve . -p 3000    # Serve app    (terminal 2)
 ---
 
 *v1: `/apps/` — NestJS + Next.js monorepo (server-based)*  
-*v2: `/p2p/` — Gun.js decentralized (peer-to-peer)*  
+*v2: `/p2p/` — Gun.js decentralized (peer-to-peer)*
+
+## 🔗 Rasmiy portfolio
+Barcha XOLERIC loyihalari: **https://xolerc.github.io/mydrime/**
